@@ -1,0 +1,124 @@
+<svg width="680" height="680" viewBox="0 0 680 680" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="45%" r="55%">
+    <stop offset="0%" stop-color="#1E5C3A"/>
+    <stop offset="100%" stop-color="#0D2E1C"/>
+  </radialGradient>
+  <radialGradient id="bodyGrad" cx="40%" cy="35%" r="60%">
+    <stop offset="0%" stop-color="#FFE066"/>
+    <stop offset="100%" stop-color="#F0A500"/>
+  </radialGradient>
+  <radialGradient id="headGrad" cx="38%" cy="32%" r="58%">
+    <stop offset="0%" stop-color="#FFE566"/>
+    <stop offset="100%" stop-color="#EFA000"/>
+  </radialGradient>
+  <radialGradient id="wingGrad" cx="30%" cy="25%" r="65%">
+    <stop offset="0%" stop-color="#F0B800"/>
+    <stop offset="100%" stop-color="#B87800"/>
+  </radialGradient>
+  <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" stop-color="#2E9957" stop-opacity="0.35"/>
+    <stop offset="100%" stop-color="#2E9957" stop-opacity="0"/>
+  </radialGradient>
+</defs>
+
+<!-- Fundo -->
+<rect width="680" height="680" fill="url(#bg)" rx="140"/>
+<ellipse cx="340" cy="310" rx="220" ry="200" fill="url(#glow)"/>
+
+<!-- Círculos decorativos -->
+<circle cx="340" cy="300" r="185" fill="none" stroke="#2E9957" stroke-width="1.5" opacity="0.25"/>
+<circle cx="340" cy="300" r="215" fill="none" stroke="#2E9957" stroke-width="0.8" opacity="0.14"/>
+
+<!-- Ramo -->
+<path d="M180 490 Q240 450 300 418 Q338 398 378 378 Q415 360 455 344" fill="none" stroke="#3AAA65" stroke-width="9" stroke-linecap="round"/>
+<path d="M225 474 Q212 448 205 428" fill="none" stroke="#3AAA65" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M288 444 Q280 416 273 398" fill="none" stroke="#3AAA65" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M350 414 Q346 386 342 368" fill="none" stroke="#3AAA65" stroke-width="5" stroke-linecap="round"/>
+<path d="M412 388 Q413 360 412 343" fill="none" stroke="#3AAA65" stroke-width="5" stroke-linecap="round"/>
+
+<!-- Folhas -->
+<ellipse cx="198" cy="421" rx="23" ry="11" fill="#4FCB7A" transform="rotate(-45 198 421)"/>
+<ellipse cx="214" cy="415" rx="17" ry="8" fill="#3AAA65" transform="rotate(-38 214 415)" opacity="0.65"/>
+<ellipse cx="268" cy="390" rx="23" ry="11" fill="#4FCB7A" transform="rotate(-52 268 390)"/>
+<ellipse cx="283" cy="383" rx="17" ry="8" fill="#3AAA65" transform="rotate(-44 283 383)" opacity="0.65"/>
+<ellipse cx="334" cy="361" rx="22" ry="11" fill="#4FCB7A" transform="rotate(-58 334 361)"/>
+<ellipse cx="403" cy="335" rx="20" ry="10" fill="#4FCB7A" transform="rotate(-60 403 335)"/>
+
+<!-- Patas -->
+<path d="M358 372 L350 406 M350 406 L336 422 M350 406 L348 426 M350 406 L363 422" fill="none" stroke="#C8860A" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M390 361 L386 396 M386 396 L371 413 M386 396 L384 416 M386 396 L398 413" fill="none" stroke="#C8860A" stroke-width="4.5" stroke-linecap="round"/>
+
+<!-- Cauda -->
+<path d="M268 325 Q235 342 205 366 Q218 338 212 312 Q234 328 268 325 Z" fill="url(#wingGrad)"/>
+<path d="M268 325 Q242 346 226 374 Q230 346 220 326 Q242 334 268 325 Z" fill="#A07000" opacity="0.45"/>
+<path d="M254 330 Q236 350 222 372" fill="none" stroke="#8A5800" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+<path d="M244 336 Q228 358 218 380" fill="none" stroke="#8A5800" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+
+<!-- Corpo -->
+<ellipse cx="358" cy="308" rx="84" ry="60" fill="url(#bodyGrad)"/>
+<ellipse cx="372" cy="322" rx="54" ry="38" fill="#FFF0A0" opacity="0.5"/>
+<!-- Peito coral -->
+<ellipse cx="370" cy="312" rx="36" ry="28" fill="#FF5F2E" opacity="0.88"/>
+<ellipse cx="374" cy="317" rx="23" ry="18" fill="#FF8855" opacity="0.55"/>
+
+<!-- Asa -->
+<path d="M306 296 Q256 250 228 210 Q242 226 266 240 Q246 203 242 168 Q275 196 295 244 Q260 214 254 196 Q284 222 302 263 Q322 282 330 296 Z" fill="url(#wingGrad)"/>
+<path d="M268 240 Q283 263 302 282" fill="none" stroke="#8A5800" stroke-width="2.2" stroke-linecap="round" opacity="0.75"/>
+<path d="M254 222 Q272 248 292 268" fill="none" stroke="#8A5800" stroke-width="1.8" stroke-linecap="round" opacity="0.6"/>
+<path d="M248 204 Q266 232 286 256" fill="none" stroke="#8A5800" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+<path d="M296 288 Q272 270 256 250 Q276 258 296 265 Q280 247 272 230 Q296 250 308 278 Z" fill="#FFD020" opacity="0.65"/>
+
+<!-- Cabeça -->
+<circle cx="422" cy="270" r="48" fill="url(#headGrad)"/>
+
+<!-- Topete -->
+<path d="M408 228 Q415 200 423 220" fill="none" stroke="#FFE566" stroke-width="6" stroke-linecap="round"/>
+<path d="M422 224 Q428 196 437 216" fill="none" stroke="#FFE566" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M434 230 Q442 204 448 222" fill="none" stroke="#F0B800" stroke-width="5" stroke-linecap="round"/>
+<circle cx="415" cy="198" r="6.5" fill="#FFE566"/>
+<circle cx="431" cy="193" r="6" fill="#FFE566"/>
+<circle cx="446" cy="200" r="5.5" fill="#F0B800"/>
+
+<!-- Máscara facial -->
+<path d="M397 260 Q403 246 419 243 Q434 241 450 250 Q465 258 466 272 Q464 280 453 282 Q440 285 426 283 Q409 279 398 270 Z" fill="#122210" opacity="0.7"/>
+
+<!-- Olho expressivo -->
+<circle cx="440" cy="263" r="12" fill="#0A1808"/>
+<circle cx="440" cy="263" r="7.5" fill="#1A3A14"/>
+<circle cx="443" cy="259" r="4.5" fill="white"/>
+<circle cx="444" cy="258" r="2" fill="#0A1808"/>
+<circle cx="438" cy="266" r="1.4" fill="white" opacity="0.55"/>
+
+<!-- Bico -->
+<path d="M463 271 L500 260 L496 275 Z" fill="#FF8C00"/>
+<path d="M463 271 L500 267 L496 275 Z" fill="#CC5800"/>
+<path d="M463 271 L498 264" fill="none" stroke="#AA4400" stroke-width="1.5" stroke-linecap="round"/>
+
+<!-- Bochecha -->
+<ellipse cx="418" cy="282" rx="15" ry="11" fill="#FF5F2E" opacity="0.6"/>
+
+<!-- Brilhinhos -->
+<g fill="#7DEBA8" opacity="0.5">
+  <circle cx="145" cy="165" r="3.5"/>
+  <circle cx="160" cy="142" r="2"/>
+  <circle cx="535" cy="150" r="4"/>
+  <circle cx="552" cy="174" r="2.5"/>
+  <circle cx="524" cy="133" r="2"/>
+  <circle cx="152" cy="425" r="2.5"/>
+  <circle cx="532" cy="442" r="3"/>
+  <circle cx="165" cy="305" r="1.8"/>
+  <circle cx="514" cy="322" r="2"/>
+  <circle cx="198" cy="525" r="2"/>
+  <circle cx="484" cy="515" r="2.5"/>
+</g>
+<g stroke="#7DEBA8" stroke-width="1.2" opacity="0.38">
+  <line x1="535" y1="146" x2="535" y2="156"/><line x1="530" y1="151" x2="540" y2="151"/>
+  <line x1="145" y1="161" x2="145" y2="171"/><line x1="140" y1="166" x2="150" y2="166"/>
+</g>
+
+<!-- Texto -->
+<text x="340" y="568" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="80" font-weight="700" fill="#F0FFF5" letter-spacing="4">Finchly</text>
+<line x1="235" y1="582" x2="445" y2="582" stroke="#3AAA65" stroke-width="2" opacity="0.55"/>
+<text x="340" y="622" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#7DEBA8" letter-spacing="2" opacity="0.88">suas finanças, com leveza</text>
+</svg>
