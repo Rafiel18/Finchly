@@ -82,3 +82,5 @@ git push origin main
 
 npm install
 npm start
+
+npm run build
