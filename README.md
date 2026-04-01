@@ -88,3 +88,7 @@ npm run build
 git add src/index.js
 git commit -m "fix: restore app render in index.js"
 git push origin main
+
+git add src/utils/finance.js
+git commit -m "feat: add finance utils"
+git push origin main
