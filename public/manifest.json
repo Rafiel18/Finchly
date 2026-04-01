@@ -3,7 +3,7 @@
   "name": "Finchly - Suas finanças, com leveza",
   "icons": [
     {
-      "src": "logo.svg",
+      "src": "finchly-logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
