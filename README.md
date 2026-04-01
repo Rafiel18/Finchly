@@ -73,3 +73,5 @@ npm install
 npm start
 
 npm run build
+
+fix: restore index.js
