@@ -84,3 +84,7 @@ npm install
 npm start
 
 npm run build
+
+git add src/index.js
+git commit -m "fix: restore app render in index.js"
+git push origin main
