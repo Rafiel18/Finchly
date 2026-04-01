@@ -79,3 +79,6 @@ fix: restore index.js
 git add src/index.js
 git commit -m "fix: restore app render in index.js"
 git push origin main
+
+npm install
+npm start
