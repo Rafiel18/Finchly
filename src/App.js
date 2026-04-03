@@ -1,9 +1,4 @@
 import { useState, createContext, useContext } from "react";
-import { useStorage } from "./hooks/useStorage";
-import { formatBRL, formatPct } from "./utils/formatters";
-import { todayStr, daysInMonth, dayOfMonth } from "./utils/date";
-import { defaultData, calcProj } from "./utils/finance";
-import { CDI_AA, CATS, CHART_COLORS, INV_TYPES } from "./constants/finance";
  
 // ─── TEMA ─────────────────────────────────────────────────────────────────────
 const ThemeContext = createContext();
