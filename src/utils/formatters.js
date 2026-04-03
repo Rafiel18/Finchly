@@ -9,3 +9,4 @@ export const formatPct = (v) =>
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }) + "%";
+  
