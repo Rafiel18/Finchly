@@ -1,4 +1,9 @@
 import { useState, createContext, useContext } from "react";
+import { useStorage } from "./hooks/useStorage";
+import { formatBRL, formatPct } from "./utils/formatters";
+import { todayStr, daysInMonth, dayOfMonth } from "./utils/date";
+import { defaultData, calcProj } from "./utils/finance";
+import { CDI_AA, CATS, CHART_COLORS, INV_TYPES } from "./constants/finance";
 
 // ─── TEMA ─────────────────────────────────────────────────────────────────────
 const ThemeContext = createContext();
@@ -59,20 +64,8 @@ const DARK = {
 };
  
 // ─── UTILS ────────────────────────────────────────────────────────────────────
-const formatBRL = (v) => Number(v).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-const formatPct = (v) => Number(v).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "%";
-const todayStr = () => new Date().toISOString().split("T")[0];
-const daysInMonth = () => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); };
-const dayOfMonth = () => new Date().getDate();
-const CDI_AA = 14.3;
- 
-function useStorage(key) {
-  const [val, setVal] = useState(() => { try { const s = localStorage.getItem(key); return s ? JSON.parse(s) : null; } catch { return null; } });
-  const save = (v) => { setVal(v); localStorage.setItem(key, JSON.stringify(v)); };
-  return [val, save];
-}
-const defaultData = () => ({ salary: "", expenses: [], debts: [], investments: [] });
- 
+
+
 // ─── CSS GLOBAL ───────────────────────────────────────────────────────────────
 const makeCSS = (t) => `
   @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
@@ -430,9 +423,6 @@ function Dashboard({ d, salary, balance, daily, totalExp, remDays }) {
 }
  
 // ─── GASTOS ───────────────────────────────────────────────────────────────────
-const CATS = ["🍔 Alimentação","🚗 Transporte","🏠 Moradia","💊 Saúde","🎮 Lazer","👗 Vestuário","📚 Educação","💡 Contas","🛒 Supermercado","Outros"];
-const CHART_COLORS = ["#3D8C5F","#3B7DD8","#F0924A","#E05A4A","#8E6DC8","#D4A017","#2AABB0","#C0392B","#5D8A62","#8FA88F"];
- 
 function Expenses({ d, save }) {
   const t = useTheme();
   const [showForm, setShowForm] = useState(false);
@@ -645,21 +635,6 @@ function DebtCard({ dbt, editId, editVal, setEditId, setEditVal, onUpdate, onRem
 }
  
 // ─── INVESTIMENTOS ────────────────────────────────────────────────────────────
-const INV_TYPES = [
-  {id:"cdi",   label:"CDI",   icon:"🏦",color:"#3B7DD8"},
-  {id:"fund",  label:"Fundo", icon:"💼",color:"#8E6DC8"},
-  {id:"fii",   label:"FII",   icon:"🏢",color:"#3D8C5F"},
-  {id:"stocks",label:"Ações", icon:"📈",color:"#F0924A"},
-];
- 
-function calcProj(inv) {
-  const p = Number(inv.principal)||0;
-  if(!p) return{monthly:0,yearly:0,rateAA:0,rateAM:0};
-  const rateAA = inv.type==="cdi"?CDI_AA*(Number(inv.cdiPct)/100):Number(inv.customRate)||0;
-  const rateAM = (Math.pow(1+rateAA/100,1/12)-1)*100;
-  return{monthly:p*(rateAM/100),yearly:p*(rateAA/100),rateAA,rateAM};
-}
- 
 function Investments({ d, save }) {
   const t = useTheme();
   const [showForm, setShowForm] = useState(false);
