@@ -236,11 +236,21 @@ function App({ user, onLogout, theme, toggleTheme }) {
  
       {/* Conteúdo */}
       <div style={{ flex:1, overflowY:"auto", padding:"20px 16px 108px" }}>
-        {tab==="dashboard" && <Dashboard d={d} salary={salary} balance={balance} daily={daily} totalExp={totalExp} remDays={remDays} />}
-        {tab==="expenses"  && <Expenses d={d} save={save} />}
-        {tab==="debts"     && <Debts d={d} save={save} />}
-        {tab==="invest"    && <Investments d={d} save={save} />}
-        {tab==="settings"  && <Settings d={d} save={save} user={user} />}
+        {tab === "dashboard" && (
+          <Dashboard
+          d={d}
+          salary={salary}
+          balance={balance}
+          daily={daily}
+          totalExp={totalExp}
+          remDays={remDays}
+  />
+)}
+
+        {tab === "expenses" && <Expenses d={d} save={save} />}
+        {tab === "debts" && <Debts d={d} save={save} />}
+        {tab === "invest" && <Investments d={d} save={save} />}
+        {tab === "settings" && <Settings d={d} save={save} user={user} />}
       </div>
  
       {/* Bottom Nav */}
