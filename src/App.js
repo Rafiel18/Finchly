@@ -66,8 +66,11 @@ function createInitialData() {
 function LoginScreen({ onLogin }) {
   const [users, setUsers] = useStorage("finchly_users");
   const [name, setName] = useState("");
+  const [selectedAvatar, setSelectedAvatar] = useState("🌿");
 
   const existingUsers = users || {};
+
+  const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
 
   const createUser = () => {
     if (!name.trim()) return;
@@ -76,7 +79,7 @@ function LoginScreen({ onLogin }) {
     const newUser = {
       id,
       name: name.trim(),
-      avatar: "🌿",
+      avatar: selectedAvatar,
     };
 
     setUsers({
@@ -102,66 +105,193 @@ function LoginScreen({ onLogin }) {
       <div
         style={{
           width: "100%",
-          maxWidth: "360px",
+          maxWidth: "380px",
           background: "#fff",
-          borderRadius: "20px",
+          borderRadius: "24px",
           padding: "24px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
           border: "1px solid #ececec",
         }}
       >
-        <h1 style={{ fontSize: "24px", marginBottom: "8px", color: "#1f2937" }}>Finchly</h1>
-        <p style={{ color: "#6b7280", marginBottom: "16px" }}>Escolha um perfil ou crie um novo</p>
+        <div style={{ textAlign: "center", marginBottom: "22px" }}>
+          <div
+            style={{
+              width: "68px",
+              height: "68px",
+              borderRadius: "20px",
+              background: theme.accentSoft,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "32px",
+              margin: "0 auto 12px",
+            }}
+          >
+            🌿
+          </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "16px" }}>
-          {Object.values(existingUsers).map((user) => (
-            <button
-              key={user.id}
-              onClick={() => onLogin(user)}
-              style={{
-                border: "1px solid #ececec",
-                background: "#fff",
-                borderRadius: "12px",
-                padding: "12px",
-                textAlign: "left",
-                cursor: "pointer",
-                fontSize: "14px",
-              }}
-            >
-              {user.avatar} {user.name}
-            </button>
-          ))}
+          <h1 style={{ fontSize: "28px", marginBottom: "6px", color: "#1f2937", fontWeight: 800 }}>
+            Finchly
+          </h1>
+
+          <p style={{ color: "#6b7280", fontSize: "14px" }}>
+            Escolha um perfil ou crie um novo
+          </p>
         </div>
 
-        <input
-          placeholder="Novo usuário"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          style={{
-            width: "100%",
-            padding: "12px",
-            borderRadius: "12px",
-            border: "1px solid #ececec",
-            marginBottom: "12px",
-            fontSize: "14px",
-          }}
-        />
+        <div style={{ marginBottom: "18px" }}>
+          <p
+            style={{
+              fontSize: "11px",
+              color: "#9ca3af",
+              fontWeight: 800,
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            Perfis salvos
+          </p>
 
-        <button
-          onClick={createUser}
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {Object.values(existingUsers).length > 0 ? (
+              Object.values(existingUsers).map((user) => (
+                <button
+                  key={user.id}
+                  onClick={() => onLogin(user)}
+                  style={{
+                    border: "1px solid #ececec",
+                    background: "#fff",
+                    borderRadius: "14px",
+                    padding: "12px 14px",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "38px",
+                      height: "38px",
+                      borderRadius: "12px",
+                      background: theme.accentSoft,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "20px",
+                    }}
+                  >
+                    {user.avatar}
+                  </div>
+
+                  <div>
+                    <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
+                    <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>Entrar nesse perfil</p>
+                  </div>
+                </button>
+              ))
+            ) : (
+              <div
+                style={{
+                  border: "1px dashed #d1d5db",
+                  borderRadius: "14px",
+                  padding: "14px",
+                  textAlign: "center",
+                  color: "#6b7280",
+                  fontSize: "13px",
+                }}
+              >
+                Nenhum perfil criado ainda.
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div
           style={{
-            width: "100%",
-            background: theme.accent,
-            color: "#fff",
-            border: "none",
-            borderRadius: "12px",
-            padding: "12px",
-            fontWeight: "bold",
-            cursor: "pointer",
+            background: "#fafafa",
+            border: "1px solid #ececec",
+            borderRadius: "18px",
+            padding: "16px",
           }}
         >
-          Criar usuário
-        </button>
+          <p
+            style={{
+              fontSize: "11px",
+              color: "#9ca3af",
+              fontWeight: 800,
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            Novo perfil
+          </p>
+
+          <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "10px" }}>
+            Escolha um avatar
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "8px",
+              marginBottom: "14px",
+            }}
+          >
+            {avatars.map((avatar) => (
+              <button
+                key={avatar}
+                onClick={() => setSelectedAvatar(avatar)}
+                style={{
+                  border: selectedAvatar === avatar ? `2px solid ${theme.accent}` : "1px solid #ececec",
+                  background: selectedAvatar === avatar ? theme.accentSoft : "#fff",
+                  borderRadius: "12px",
+                  height: "44px",
+                  cursor: "pointer",
+                  fontSize: "22px",
+                }}
+              >
+                {avatar}
+              </button>
+            ))}
+          </div>
+
+          <input
+            placeholder="Nome do novo usuário"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{
+              width: "100%",
+              padding: "12px",
+              borderRadius: "12px",
+              border: "1px solid #ececec",
+              marginBottom: "12px",
+              fontSize: "14px",
+              background: "#fff",
+            }}
+          />
+
+          <button
+            onClick={createUser}
+            style={{
+              width: "100%",
+              background: theme.accent,
+              color: "#fff",
+              border: "none",
+              borderRadius: "12px",
+              padding: "12px",
+              fontWeight: 700,
+              cursor: "pointer",
+              fontSize: "14px",
+            }}
+          >
+            Criar usuário
+          </button>
+        </div>
       </div>
     </div>
   );
