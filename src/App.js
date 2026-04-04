@@ -3,7 +3,6 @@ import Dashboard from "./components/Dashboard";
 import Expenses from "./components/Expenses";
 import DebtCard from "./components/DebtCard";
 import Investments from "./components/Investments";
-import Settings from "./components/Settings";
 import { ThemeContext } from "./context/theme";
 
 const theme = {
@@ -94,6 +93,34 @@ function DebtsTest({ d }) {
   );
 }
 
+function SettingsTest() {
+  return (
+    <div
+      style={{
+        minHeight: "60vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          padding: "24px",
+          borderRadius: "18px",
+          border: "1px solid #ececec",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ marginBottom: "8px", color: "#1f2937" }}>Configurações</h2>
+        <p style={{ color: "#6b7280" }}>Tela temporária funcionando ✅</p>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("dashboard");
 
@@ -175,7 +202,7 @@ export default function App() {
           {tab === "expenses" && <Expenses d={dadosTeste} save={() => {}} />}
           {tab === "debts" && <DebtsTest d={dadosTeste} />}
           {tab === "invest" && <Investments d={dadosTeste} save={() => {}} />}
-          {tab === "settings" && <Settings d={{}} save={() => {}} user={{ name: "Rafa", avatar: "🦊" }} />}
+          {tab === "settings" && <SettingsTest />}
         </div>
 
         <div
