@@ -339,37 +339,80 @@ function MainApp({ user, onLogout }) {
         style={{
           padding: "14px 16px",
           borderBottom: `1px solid ${theme.border}`,
-          background: "#ffffffee",
+          background: "rgba(255,255,255,0.88)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
           position: "sticky",
           top: 0,
-          zIndex: 10,
+          zIndex: 20,
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          boxShadow: "0 2px 10px rgba(0,0,0,0.03)",
         }}
       >
-        <div>
-          <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>Finchly</h1>
-          <p style={{ color: theme.textSub, fontSize: "12px" }}>
-            {user.avatar} {user.name}
-          </p>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div
+            style={{
+              width: "44px",
+              height: "44px",
+              borderRadius: "14px",
+              background: theme.accentSoft,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "22px",
+              border: `1px solid ${theme.border}`,
+            }}
+          >
+            {user.avatar}
+          </div>
+
+          <div>
+            <p
+              style={{
+                fontSize: "11px",
+                color: theme.textMuted,
+                textTransform: "uppercase",
+                letterSpacing: "0.6px",
+                fontWeight: 800,
+                marginBottom: "3px",
+              }}
+            >
+              Finchly
+            </p>
+            <p style={{ color: theme.text, fontSize: "15px", fontWeight: 800 }}>
+              {user.name}
+            </p>
+          </div>
         </div>
 
         <button
           onClick={onLogout}
           style={{
             background: "#fff",
-            border: "1px solid #ececec",
-            borderRadius: "10px",
-            padding: "8px 12px",
+            border: `1px solid ${theme.border}`,
+            borderRadius: "12px",
+            padding: "9px 12px",
             cursor: "pointer",
+            fontWeight: 700,
+            color: theme.textSub,
+            boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
           }}
         >
           Sair
         </button>
       </div>
 
-      <div style={{ flex: 1, padding: "16px 16px 100px" }}>
+      <div
+        style={{
+          flex: 1,
+          padding: "18px 16px 110px",
+          maxWidth: "720px",
+          width: "100%",
+          margin: "0 auto",
+        }}
+      >
         {tab === "dashboard" && (
           <Dashboard
             d={d}
@@ -390,37 +433,64 @@ function MainApp({ user, onLogout }) {
       <div
         style={{
           position: "fixed",
-          left: 0,
-          right: 0,
-          bottom: 0,
+          left: "50%",
+          transform: "translateX(-50%)",
+          bottom: "10px",
+          width: "calc(100% - 20px)",
+          maxWidth: "720px",
           display: "flex",
-          background: "#ffffffee",
-          borderTop: `1px solid ${theme.border}`,
-          padding: "8px 0 12px",
+          background: "rgba(255,255,255,0.92)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          border: `1px solid ${theme.border}`,
+          borderRadius: "20px",
+          padding: "8px 4px 10px",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+          zIndex: 30,
         }}
       >
-        {tabs.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => setTab(item.id)}
-            style={{
-              flex: 1,
-              border: "none",
-              background: "transparent",
-              color: tab === item.id ? theme.accent : theme.textMuted,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: "4px",
-              fontSize: "10px",
-              fontWeight: tab === item.id ? "bold" : "normal",
-              cursor: "pointer",
-            }}
-          >
-            <span style={{ fontSize: "18px" }}>{item.icon}</span>
-            <span>{item.label}</span>
-          </button>
-        ))}
+        {tabs.map((item) => {
+          const active = tab === item.id;
+
+          return (
+            <button
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              style={{
+                flex: 1,
+                border: "none",
+                background: active ? theme.accentSoft : "transparent",
+                color: active ? theme.accent : theme.textMuted,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "4px",
+                fontSize: "10px",
+                fontWeight: active ? 800 : 600,
+                cursor: "pointer",
+                borderRadius: "16px",
+                padding: "8px 4px",
+                transition: "all 0.2s ease",
+              }}
+            >
+              <span style={{ fontSize: "18px" }}>{item.icon}</span>
+              <span>{item.label}</span>
+
+              {active && (
+                <div
+                  style={{
+                    width: "18px",
+                    height: "3px",
+                    borderRadius: "999px",
+                    background: theme.accent,
+                    marginTop: "2px",
+                  }}
+                />
+              )}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
