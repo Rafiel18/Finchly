@@ -24,7 +24,10 @@ export default function Investments({ d, save }) {
       return setErr("Preencha nome e valor.");
     }
 
-    if (form.type === "cdi" && (Number(form.cdiPct) < 80 || Number(form.cdiPct) > 110)) {
+    if (
+      form.type === "cdi" &&
+      (Number(form.cdiPct) < 80 || Number(form.cdiPct) > 110)
+    ) {
       return setErr("CDI entre 80% e 110%.");
     }
 
@@ -35,7 +38,11 @@ export default function Investments({ d, save }) {
     save({
       investments: [
         ...d.investments,
-        { ...form, id: Date.now(), principal: Number(form.principal) },
+        {
+          ...form,
+          id: Date.now(),
+          principal: Number(form.principal),
+        },
       ],
     });
 
@@ -50,12 +57,24 @@ export default function Investments({ d, save }) {
     setErr("");
   };
 
-  const remove = (id) =>
-    save({ investments: d.investments.filter((inv) => inv.id !== id) });
+  const remove = (id) => {
+    save({
+      investments: d.investments.filter((inv) => inv.id !== id),
+    });
+  };
 
-  const totalInv = d.investments.reduce((s, inv) => s + Number(inv.principal), 0);
-  const totalMon = d.investments.reduce((s, inv) => s + calcProj(inv).monthly, 0);
-  const totalYea = d.investments.reduce((s, inv) => s + calcProj(inv).yearly, 0);
+  const totalInv = d.investments.reduce(
+    (sum, inv) => sum + Number(inv.principal),
+    0
+  );
+  const totalMon = d.investments.reduce(
+    (sum, inv) => sum + calcProj(inv).monthly,
+    0
+  );
+  const totalYea = d.investments.reduce(
+    (sum, inv) => sum + calcProj(inv).yearly,
+    0
+  );
 
   return (
     <div className="fade-up">
@@ -160,7 +179,9 @@ export default function Investments({ d, save }) {
             type="number"
             placeholder="Valor investido (R$)"
             value={form.principal}
-            onChange={(e) => setForm((f) => ({ ...f, principal: e.target.value }))}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, principal: e.target.value }))
+            }
           />
 
           <p
@@ -218,7 +239,7 @@ export default function Investments({ d, save }) {
                 </span>{" "}
                 ={" "}
                 <span style={{ color: t.positive, fontWeight: 700 }}>
-                  {(CDI_AA * Number(form.cdiPct) / 100).toFixed(2)}% a.a.
+                  {((CDI_AA * Number(form.cdiPct)) / 100).toFixed(2)}% a.a.
                 </span>
               </p>
 
@@ -228,8 +249,14 @@ export default function Investments({ d, save }) {
                 max="110"
                 step="1"
                 value={form.cdiPct}
-                onChange={(e) => setForm((f) => ({ ...f, cdiPct: e.target.value }))}
-                style={{ width: "100%", marginBottom: "3px", accentColor: t.accentBlue }}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, cdiPct: e.target.value }))
+                }
+                style={{
+                  width: "100%",
+                  marginBottom: "3px",
+                  accentColor: t.accentBlue,
+                }}
               />
 
               <div
@@ -251,7 +278,9 @@ export default function Investments({ d, save }) {
               type="number"
               placeholder="Taxa de rendimento anual (%)"
               value={form.customRate}
-              onChange={(e) => setForm((f) => ({ ...f, customRate: e.target.value }))}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, customRate: e.target.value }))
+              }
             />
           )}
 
@@ -280,7 +309,11 @@ export default function Investments({ d, save }) {
           return (
             <Card
               key={inv.id}
-              style={{ padding: "15px", marginBottom: "8px", borderLeft: `3px solid ${tp.color}` }}
+              style={{
+                padding: "15px",
+                marginBottom: "8px",
+                borderLeft: `3px solid ${tp.color}`,
+              }}
             >
               <div
                 style={{
@@ -332,7 +365,13 @@ export default function Investments({ d, save }) {
                 </button>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "7px" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1fr 1fr 1fr",
+                  gap: "7px",
+                }}
+              >
                 {[
                   { label: "Investido", value: inv.principal, color: t.text },
                   { label: "Rend./mês", value: proj.monthly, color: t.positive },
@@ -396,14 +435,25 @@ export default function Root() {
   const [user, setUser] = useState(null);
   const [theme, setTheme] = useState("light");
   const t = theme === "light" ? LIGHT : DARK;
-  const toggleTheme = () => setTheme(th => th === "light" ? "dark" : "light");
+  const toggleTheme = () => setTheme((th) => (th === "light" ? "dark" : "light"));
  
   return (
     <ThemeContext.Provider value={t}>
-      {user
-        ? <App user={user} onLogout={()=>setUser(null)} theme={theme} toggleTheme={toggleTheme}/>
-        : <LoginScreen onLogin={setUser} theme={theme} toggleTheme={toggleTheme}/>
-      }
+      {user ? (
+        <App
+          user={user}
+          onLogout={() => setUser(null)}
+          theme={theme}
+          toggleTheme={toggleTheme}
+        />
+      ) : (
+        <LoginScreen
+          onLogin={setUser}
+          theme={theme}
+          toggleTheme={toggleTheme}
+        />
+      )}
     </ThemeContext.Provider>
   );
 }
+
