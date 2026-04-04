@@ -3,6 +3,7 @@ import Dashboard from "./components/Dashboard";
 import Expenses from "./components/Expenses";
 import DebtCard from "./components/DebtCard";
 import Investments from "./components/Investments";
+import Settings from "./components/Settings";
 import { ThemeContext } from "./context/theme";
 import { defaultData } from "./utils/finance";
 import { daysInMonth, dayOfMonth } from "./utils/date";
@@ -322,7 +323,7 @@ function MainApp({ user, onLogout }) {
         {tab === "expenses" && <Expenses d={d} save={save} />}
         {tab === "debts" && <DebtsTest d={d} save={save} />}
         {tab === "invest" && <Investments d={d} save={save} />}
-        {tab === "settings" && <SettingsTest />}
+        {tab === "settings" && <Settings d={d} save={save} user={user} />}
       </div>
 
       <div
