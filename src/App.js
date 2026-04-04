@@ -1,19 +1,18 @@
 import { useState } from "react";
 import { useStorage } from "./hooks/useStorage";
-import { formatBRL, formatPct } from "./utils/formatters";
-import { todayStr, daysInMonth, dayOfMonth } from "./utils/date";
-import { defaultData, calcProj } from "./utils/finance";
-import { CDI_AA, CATS, CHART_COLORS, INV_TYPES } from "./constants/finance";
+import { defaultData } from "./utils/finance";
+import { daysInMonth, dayOfMonth } from "./utils/date";
 import { ThemeContext, useTheme } from "./context/theme";
+
+import Dashboard from "./components/Dashboard";
+import Expenses from "./components/Expenses";
+import DebtCard from "./components/DebtCard";
+import Investments from "./components/Investments";
+import Settings from "./components/Settings";
+
 import Card from "./components/ui/Card";
 import Inp from "./components/ui/Inp";
 import Btn from "./components/ui/Btn";
-import Dashboard from "./components/Dashboard";
-import DebtCard from "./components/DebtCard";
-import Settings from "./components/Settings";
-import Investments from "./components/Investments";
-import Expenses from "./components/Expenses";
-
 // ─── TEMA ─────────────────────────────────────────────────────────────────────
 
 const LIGHT = {
