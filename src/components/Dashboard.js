@@ -7,10 +7,13 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
   const t = useTheme();
   const [animatedDaily, setAnimatedDaily] = useState(0);
 
-  const totalInv = d.investments.reduce((s, i) => s + Number(i.principal || 0), 0);
-  const expenses = Array.isArray(d.expenses) ? d.expenses : [];
+  const expenses = Array.isArray(d?.expenses) ? d.expenses : [];
+  const investments = Array.isArray(d?.investments) ? d.investments : [];
+
+  const totalInv = investments.reduce((sum, item) => sum + Number(item.principal || 0), 0);
 
   const spentPercent = salary > 0 ? Math.min((totalExp / salary) * 100, 100) : 0;
+
   const monthProgress = useMemo(() => {
     const now = new Date();
     const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
@@ -38,11 +41,13 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
   const categoryMap = useMemo(() => {
     const map = {};
-    for (const expense of expenses) {
+
+    expenses.forEach((expense) => {
       const category = expense.category || "Outros";
       const amount = Number(expense.amount || 0);
       map[category] = (map[category] || 0) + amount;
-    }
+    });
+
     return map;
   }, [expenses]);
 
@@ -60,11 +65,8 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
     if (salary <= 0) {
       return {
         label: "Sem receita cadastrada",
-        tone: "neutral",
         icon: "🫥",
         color: t.textSub,
-        soft: t.bgInput,
-        border: t.border,
         message: "Cadastre sua receita para liberar análises mais inteligentes.",
       };
     }
@@ -72,23 +74,17 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
     if (totalExp > salary || daily < 0) {
       return {
         label: "Crítico",
-        tone: "negative",
         icon: "🚨",
         color: t.negative,
-        soft: t.negativeSoft,
-        border: `${t.negative}30`,
-        message: "Seu ritmo atual indica risco real de fechar o mês no vermelho.",
+        message: "Seu ritmo atual indica risco de fechar o mês no vermelho.",
       };
     }
 
     if (spentPercent >= 90) {
       return {
         label: "Atenção máxima",
-        tone: "warning",
         icon: "⚠️",
         color: t.warning,
-        soft: t.warningSoft,
-        border: `${t.warning}30`,
         message: "Você já consumiu quase toda a renda do mês.",
       };
     }
@@ -96,22 +92,16 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
     if (spentPercent >= 70) {
       return {
         label: "Atenção",
-        tone: "warning",
         icon: "👀",
         color: t.warning,
-        soft: t.warningSoft,
-        border: `${t.warning}30`,
         message: "Ainda dá para ajustar a rota, mas o orçamento apertou.",
       };
     }
 
     return {
       label: "Planejamento em dia",
-      tone: "positive",
       icon: "🌿",
       color: t.heroText,
-      soft: t.accentSoft,
-      border: `${t.accent}25`,
       message: "Seu orçamento está saudável até aqui.",
     };
   }, [salary, totalExp, daily, spentPercent, t]);
@@ -141,14 +131,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
       list.push(`Mantendo esse ritmo, a projeção é fechar o mês com ${formatBRL(projectedMonthBalance)}.`);
     }
 
-    if (averageSpentPerDaySoFar > 0) {
-      list.push(`Seu gasto médio por dia está em ${formatBRL(averageSpentPerDaySoFar)}.`);
-    }
-
-    if (daily >= 0 && salary > 0) {
-      list.push(`Seu limite seguro por dia agora é ${formatBRL(daily)}.`);
-    }
-
     return list.slice(0, 3);
   }, [
     salary,
@@ -158,29 +140,32 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
     topCategoryName,
     topCategoryPercent,
     projectedMonthBalance,
-    averageSpentPerDaySoFar,
-    daily,
   ]);
 
   useEffect(() => {
     const target = daily < 0 ? 0 : daily;
-    let frame;
+    let animationFrame;
     let start = null;
     const duration = 700;
 
     const animate = (timestamp) => {
       if (!start) start = timestamp;
+
       const progress = Math.min((timestamp - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
+
       setAnimatedDaily(target * eased);
 
       if (progress < 1) {
-        frame = requestAnimationFrame(animate);
+        animationFrame = requestAnimationFrame(animate);
       }
     };
 
-    frame = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frame);
+    animationFrame = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+    };
   }, [daily]);
 
   const recentExpenses = expenses.slice(-3).reverse();
@@ -199,6 +184,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
         >
           Visão Geral
         </h2>
+
         <p style={{ color: t.textSub, fontSize: "14px" }}>
           {new Date().toLocaleDateString("pt-BR", {
             weekday: "long",
@@ -228,9 +214,9 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             width: "120px",
             height: "120px",
             background:
-              status.tone === "negative"
+              status.color === t.negative
                 ? "rgba(192,57,43,0.10)"
-                : status.tone === "warning"
+                : status.color === t.warning
                 ? "rgba(196,90,26,0.10)"
                 : "rgba(61,140,95,0.10)",
             borderRadius: "50%",
@@ -254,10 +240,9 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
               alignItems: "center",
               gap: "10px",
               background: "rgba(255,255,255,0.58)",
-              border: `1px solid ${status.border}`,
+              border: `1px solid ${t.border}`,
               borderRadius: "999px",
               padding: "10px 14px",
-              backdropFilter: "blur(6px)",
             }}
           >
             <span style={{ fontSize: "20px" }}>{status.icon}</span>
@@ -274,12 +259,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             </span>
           </div>
 
-          <div
-            style={{
-              textAlign: "right",
-              minWidth: "70px",
-            }}
-          >
+          <div style={{ textAlign: "right", minWidth: "70px" }}>
             <p style={{ fontSize: "12px", color: t.textSub, fontWeight: 700 }}>Restam</p>
             <p style={{ fontSize: "18px", color: t.text, fontWeight: 800 }}>{remDays} dias</p>
           </div>
@@ -300,7 +280,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
         <p
           style={{
-            fontSize: "clamp(40px, 10vw, 54px)",
+            fontSize: "48px",
             fontWeight: 800,
             fontFamily: "'JetBrains Mono', monospace",
             color: daily >= 0 ? t.heroText : t.negative,
@@ -369,7 +349,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
               border: `1px solid ${t.border}`,
               borderRadius: "18px",
               padding: "14px",
-              backdropFilter: "blur(6px)",
             }}
           >
             <p
@@ -402,7 +381,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
               border: `1px solid ${t.border}`,
               borderRadius: "18px",
               padding: "14px",
-              backdropFilter: "blur(6px)",
             }}
           >
             <p
@@ -450,16 +428,8 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             icon: "💰",
           },
           { label: "Investido", value: totalInv, color: t.accentBlue, soft: t.accentBlueSoft, icon: "🌱" },
-        ].map((c, index) => (
-          <Card
-            key={c.label}
-            style={{
-              padding: "16px",
-              transform: "translateY(0)",
-              animation: `fadeUp 0.35s ease forwards`,
-              animationDelay: `${index * 0.05}s`,
-            }}
-          >
+        ].map((c) => (
+          <Card key={c.label} style={{ padding: "16px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
               <div
                 style={{
@@ -685,7 +655,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             </span>
           </div>
 
-          {recentExpenses.map((e, index) => (
+          {recentExpenses.map((e) => (
             <Card
               key={e.id}
               style={{
@@ -694,8 +664,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
-                animation: `fadeUp 0.35s ease forwards`,
-                animationDelay: `${index * 0.06}s`,
               }}
             >
               <div style={{ minWidth: 0 }}>
