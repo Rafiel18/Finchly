@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
@@ -12,24 +12,49 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
   const totalInv = investments.reduce((sum, item) => sum + Number(item.principal || 0), 0);
   const spentPercent = salary > 0 ? Math.min((totalExp / salary) * 100, 100) : 0;
 
-  const now = new Date();
-  const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-  const monthProgress = Math.min((now.getDate() / totalDays) * 100, 100);
+  const monthProgress = useMemo(() => {
+    const now = new Date();
+    const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+    return Math.min((now.getDate() / totalDays) * 100, 100);
+  }, []);
 
   const averageSpentPerExpense = expenses.length > 0 ? totalExp / expenses.length : 0;
-  const averageSpentPerDaySoFar = now.getDate() > 0 ? totalExp / now.getDate() : 0;
-  const projectedMonthSpend = now.getDate() > 0 ? (totalExp / now.getDate()) * totalDays : totalExp;
+
+  const averageSpentPerDaySoFar = useMemo(() => {
+    const now = new Date();
+    const currentDay = now.getDate();
+    return currentDay > 0 ? totalExp / currentDay : 0;
+  }, [totalExp]);
+
+  const projectedMonthSpend = useMemo(() => {
+    const now = new Date();
+    const currentDay = now.getDate();
+    const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+    if (currentDay <= 0) return totalExp;
+    return (totalExp / currentDay) * totalDays;
+  }, [totalExp]);
+
   const projectedMonthBalance = salary - projectedMonthSpend;
 
-  const categoryMap = {};
-  expenses.forEach((expense) => {
-    const category = expense.category || "Outros";
-    const amount = Number(expense.amount || 0);
-    categoryMap[category] = (categoryMap[category] || 0) + amount;
-  });
+  const categoryMap = useMemo(() => {
+    const map = {};
 
-  const entries = Object.entries(categoryMap).sort((a, b) => b[1] - a[1]);
-  const topCategoryEntry = entries.length ? entries[0] : null;
+    expenses.forEach((expense) => {
+      const category = expense.category || "Outros";
+      const amount = Number(expense.amount || 0);
+      map[category] = (map[category] || 0) + amount;
+    });
+
+    return map;
+  }, [expenses]);
+
+  const topCategoryEntry = useMemo(() => {
+    const entries = Object.entries(categoryMap);
+    if (!entries.length) return null;
+    return entries.sort((a, b) => b[1] - a[1])[0];
+  }, [categoryMap]);
+
   const topCategoryName = topCategoryEntry ? topCategoryEntry[0] : "Nenhuma";
   const topCategoryValue = topCategoryEntry ? topCategoryEntry[1] : 0;
   const topCategoryPercent = totalExp > 0 ? (topCategoryValue / totalExp) * 100 : 0;
