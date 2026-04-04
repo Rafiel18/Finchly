@@ -333,6 +333,7 @@ function MainApp({ user, onLogout }) {
         display: "flex",
         flexDirection: "column",
         fontFamily: "Arial, sans-serif",
+        overflowX: "hidden",
       }}
     >
       <div
@@ -404,15 +405,17 @@ function MainApp({ user, onLogout }) {
         </button>
       </div>
 
-      <div
-        style={{
-          flex: 1,
-          padding: "18px 16px 110px",
-          maxWidth: "720px",
-          width: "100%",
-          margin: "0 auto",
-        }}
-      >
+        <div
+          style={{
+            flex: 1,
+            padding: "18px 16px 120px",
+            maxWidth: "720px",
+            width: "100%",
+            margin: "0 auto",
+            boxSizing: "border-box",
+            transition: "opacity 0.18s ease, transform 0.18s ease",
+  }}
+>
         {tab === "dashboard" && (
           <Dashboard
             d={d}
@@ -433,11 +436,11 @@ function MainApp({ user, onLogout }) {
       <div
         style={{
           position: "fixed",
-          left: "50%",
-          transform: "translateX(-50%)",
+          left: "10px",
+          right: "10px",
           bottom: "10px",
-          width: "calc(100% - 20px)",
-          maxWidth: "720px",
+          maxWidth: "700px",
+          margin: "0 auto",
           display: "flex",
           background: "rgba(255,255,255,0.92)",
           backdropFilter: "blur(16px)",
@@ -447,6 +450,7 @@ function MainApp({ user, onLogout }) {
           padding: "8px 4px 10px",
           boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
           zIndex: 30,
+          boxSizing: "border-box",
         }}
       >
         {tabs.map((item) => {
