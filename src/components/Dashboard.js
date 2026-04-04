@@ -1,22 +1,17 @@
-import React, { useMemo } from "react";
+import React, { useState } from "react";
 import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
 export default function Dashboard({ d, salary, balance, daily, totalExp, remDays }) {
   const t = useTheme();
+  const [mostrarDetalhes, setMostrarDetalhes] = useState(true);
 
   const expenses = Array.isArray(d?.expenses) ? d.expenses : [];
   const investments = Array.isArray(d?.investments) ? d.investments : [];
 
   const totalInv = investments.reduce((sum, item) => sum + Number(item.principal || 0), 0);
   const spentPercent = salary > 0 ? Math.min((totalExp / salary) * 100, 100) : 0;
-
-  const monthProgress = useMemo(() => {
-    const now = new Date();
-    const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    return Math.min((now.getDate() / totalDays) * 100, 100);
-  }, []);
 
   let status;
   if (salary <= 0) {
@@ -82,11 +77,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           </h2>
 
           <p style={{ color: t.textSub, fontSize: "14px" }}>
-            {new Date().toLocaleDateString("pt-BR", {
-              weekday: "long",
-              day: "numeric",
-              month: "long",
-            })}
+            Dashboard em teste controlado
           </p>
         </div>
 
@@ -154,17 +145,82 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           <p style={{ color: t.textSub, fontSize: "13px", marginTop: "8px", marginBottom: "14px" }}>
             {status.message}
           </p>
+
+          <button
+            onClick={() => setMostrarDetalhes(!mostrarDetalhes)}
+            style={{
+              background: t.accent,
+              color: "#fff",
+              border: "none",
+              borderRadius: "10px",
+              padding: "10px 14px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            {mostrarDetalhes ? "Ocultar detalhes" : "Mostrar detalhes"}
+          </button>
         </Card>
 
-        <Card style={{ padding: "14px", marginTop: "12px", background: t.bgCard, border: `1px solid ${t.border}` }}>
-          <p style={{ fontSize: "11px", color: t.textMuted, fontWeight: 800, textTransform: "uppercase", marginBottom: "8px" }}>
-            Ritmo do mês
-          </p>
+        {mostrarDetalhes && (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "12px",
+              marginBottom: "16px",
+            }}
+          >
+            {[
+              { label: "Receita", value: salary, color: t.positive, soft: t.positiveSoft, icon: "💼" },
+              { label: "Gastos", value: totalExp, color: t.warning, soft: t.warningSoft, icon: "💳" },
+              {
+                label: "Saldo",
+                value: balance,
+                color: balance >= 0 ? t.positive : t.negative,
+                soft: balance >= 0 ? t.positiveSoft : t.negativeSoft,
+                icon: "💰",
+              },
+              { label: "Investido", value: totalInv, color: t.accentBlue, soft: t.accentBlueSoft, icon: "🌱" },
+            ].map((c) => (
+              <Card key={c.label} style={{ padding: "16px", background: t.bgCard, border: `1px solid ${t.border}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+                  <div
+                    style={{
+                      width: "38px",
+                      height: "38px",
+                      borderRadius: "12px",
+                      background: c.soft,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "18px",
+                    }}
+                  >
+                    {c.icon}
+                  </div>
+                </div>
 
-          <p style={{ fontSize: "13px", color: t.textSub }}>
-            Tempo do mês: {monthProgress.toFixed(0)}%
-          </p>
-        </Card>
+                <p
+                  style={{
+                    fontSize: "11px",
+                    color: t.textSub,
+                    fontWeight: 800,
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                    marginBottom: "8px",
+                  }}
+                >
+                  {c.label}
+                </p>
+
+                <p style={{ fontSize: "15px", fontWeight: 800, color: c.color, lineHeight: 1.2 }}>
+                  {formatBRL(c.value)}
+                </p>
+              </Card>
+            ))}
+          </div>
+        )}
 
         {recentExpenses.length > 0 && (
           <Card style={{ padding: "16px", marginTop: "12px", background: t.bgCard, border: `1px solid ${t.border}` }}>
