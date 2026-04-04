@@ -1,55 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Dashboard({ d, salary, balance, daily, totalExp, remDays }) {
+export default function Dashboard({ d, salary, balance, daily, totalExp }) {
   const t = useTheme();
   const [mostrarDetalhes, setMostrarDetalhes] = useState(true);
+  const [mensagem, setMensagem] = useState("Carregando diagnóstico...");
+
+  useEffect(() => {
+    if (salary <= 0) {
+      setMensagem("Cadastre sua receita para liberar análises mais inteligentes.");
+    } else if (totalExp > salary || daily < 0) {
+      setMensagem("Seu ritmo atual indica risco de fechar o mês no vermelho.");
+    } else if ((totalExp / salary) * 100 >= 70) {
+      setMensagem("Ainda dá para ajustar a rota, mas o orçamento apertou.");
+    } else {
+      setMensagem("Seu orçamento está saudável até aqui.");
+    }
+  }, [salary, totalExp, daily]);
 
   const expenses = Array.isArray(d?.expenses) ? d.expenses : [];
   const investments = Array.isArray(d?.investments) ? d.investments : [];
 
   const totalInv = investments.reduce((sum, item) => sum + Number(item.principal || 0), 0);
   const spentPercent = salary > 0 ? Math.min((totalExp / salary) * 100, 100) : 0;
-
-  let status;
-  if (salary <= 0) {
-    status = {
-      label: "Sem receita cadastrada",
-      icon: "🫥",
-      color: t.textSub,
-      message: "Cadastre sua receita para liberar análises mais inteligentes.",
-    };
-  } else if (totalExp > salary || daily < 0) {
-    status = {
-      label: "Crítico",
-      icon: "🚨",
-      color: t.negative,
-      message: "Seu ritmo atual indica risco de fechar o mês no vermelho.",
-    };
-  } else if (spentPercent >= 90) {
-    status = {
-      label: "Atenção máxima",
-      icon: "⚠️",
-      color: t.warning,
-      message: "Você já consumiu quase toda a renda do mês.",
-    };
-  } else if (spentPercent >= 70) {
-    status = {
-      label: "Atenção",
-      icon: "👀",
-      color: t.warning,
-      message: "Ainda dá para ajustar a rota, mas o orçamento apertou.",
-    };
-  } else {
-    status = {
-      label: "Planejamento em dia",
-      icon: "🌿",
-      color: t.heroText,
-      message: "Seu orçamento está saudável até aqui.",
-    };
-  }
 
   const recentExpenses = expenses.slice(-3).reverse();
 
@@ -91,32 +66,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             boxShadow: t.shadow,
           }}
         >
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: "10px",
-              background: "rgba(255,255,255,0.58)",
-              border: `1px solid ${t.border}`,
-              borderRadius: "999px",
-              padding: "10px 14px",
-              marginBottom: "14px",
-            }}
-          >
-            <span style={{ fontSize: "20px" }}>{status.icon}</span>
-            <span
-              style={{
-                fontSize: "12px",
-                fontWeight: 800,
-                color: status.color,
-                letterSpacing: "0.6px",
-                textTransform: "uppercase",
-              }}
-            >
-              {status.label}
-            </span>
-          </div>
-
           <p
             style={{
               color: t.heroText,
@@ -143,7 +92,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           </p>
 
           <p style={{ color: t.textSub, fontSize: "13px", marginTop: "8px", marginBottom: "14px" }}>
-            {status.message}
+            {mensagem}
           </p>
 
           <button
@@ -253,6 +202,12 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             ))}
           </Card>
         )}
+
+        <Card style={{ padding: "14px", marginTop: "12px", background: t.bgCard, border: `1px solid ${t.border}` }}>
+          <p style={{ fontSize: "13px", color: t.textSub }}>
+            Renda consumida: {salary > 0 ? `${spentPercent.toFixed(0)}%` : "--"}
+          </p>
+        </Card>
       </div>
     </div>
   );
