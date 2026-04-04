@@ -1,34 +1,175 @@
-import React from "react";
+import React, { useState } from "react";
+import Card from "./ui/Card";
+import { useTheme } from "../context/theme";
+import { formatBRL } from "../utils/formatters";
 
-export default function Settings({ user }) {
+export default function Settings({ d, save, user }) {
+  const t = useTheme();
+  const [salaryInput, setSalaryInput] = useState(String(d?.salary || ""));
+
+  const handleSaveSalary = () => {
+    const salary = Number(salaryInput);
+    if (isNaN(salary) || salary < 0) return;
+
+    save({
+      salary,
+    });
+  };
+
   return (
     <div
       style={{
-        minHeight: "60vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        minHeight: "100vh",
+        background: t.bg,
+        padding: "24px 16px 40px",
         fontFamily: "Arial, sans-serif",
       }}
     >
-      <div
-        style={{
-          background: "#fff",
-          padding: "24px",
-          borderRadius: "18px",
-          border: "1px solid #ececec",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-          textAlign: "center",
-          minWidth: "260px",
-        }}
-      >
-        <h2 style={{ marginBottom: "10px", color: "#1f2937" }}>Configurações</h2>
-        <p style={{ color: "#6b7280", marginBottom: "8px" }}>
-          Tela mínima em teste
-        </p>
-        <p style={{ color: "#1f2937", fontWeight: "bold" }}>
-          Usuário: {user?.name || "Sem nome"}
-        </p>
+      <div style={{ maxWidth: "560px", margin: "0 auto" }}>
+        <div style={{ marginBottom: "18px" }}>
+          <h2
+            style={{
+              fontSize: "28px",
+              fontWeight: 800,
+              color: t.text,
+              marginBottom: "4px",
+            }}
+          >
+            Configurações
+          </h2>
+          <p style={{ color: t.textSub, fontSize: "14px" }}>
+            Ajustes básicos do seu perfil e finanças
+          </p>
+        </div>
+
+        <Card
+          style={{
+            padding: "18px",
+            marginBottom: "14px",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <p
+            style={{
+              fontSize: "11px",
+              color: t.textMuted,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            Usuário
+          </p>
+
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div
+              style={{
+                width: "46px",
+                height: "46px",
+                borderRadius: "14px",
+                background: t.accentSoft,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "22px",
+              }}
+            >
+              {user?.avatar || "👤"}
+            </div>
+
+            <div>
+              <p style={{ fontSize: "16px", fontWeight: 700, color: t.text }}>
+                {user?.name || "Sem nome"}
+              </p>
+              <p style={{ fontSize: "13px", color: t.textSub }}>
+                Perfil ativo no momento
+              </p>
+            </div>
+          </div>
+        </Card>
+
+        <Card
+          style={{
+            padding: "18px",
+            marginBottom: "14px",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <p
+            style={{
+              fontSize: "11px",
+              color: t.textMuted,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            Receita mensal
+          </p>
+
+          <p style={{ fontSize: "14px", color: t.textSub, marginBottom: "10px" }}>
+            Valor atual: <strong style={{ color: t.text }}>{formatBRL(d?.salary || 0)}</strong>
+          </p>
+
+          <input
+            type="number"
+            value={salaryInput}
+            onChange={(e) => setSalaryInput(e.target.value)}
+            placeholder="Digite sua receita mensal"
+            style={{
+              width: "100%",
+              padding: "12px",
+              borderRadius: "12px",
+              border: `1px solid ${t.border}`,
+              background: t.bgInput,
+              color: t.text,
+              marginBottom: "12px",
+              fontSize: "14px",
+            }}
+          />
+
+          <button
+            onClick={handleSaveSalary}
+            style={{
+              width: "100%",
+              background: t.accent,
+              color: "#fff",
+              border: "none",
+              borderRadius: "12px",
+              padding: "12px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Salvar receita
+          </button>
+        </Card>
+
+        <Card
+          style={{
+            padding: "18px",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <p
+            style={{
+              fontSize: "11px",
+              color: t.textMuted,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            Estado do app
+          </p>
+
+          <p style={{ fontSize: "14px", color: t.textSub, lineHeight: 1.5 }}>
+            Base principal funcionando com usuários, dados persistidos, gastos, dívidas e investimentos.
+          </p>
+        </Card>
       </div>
     </div>
   );
