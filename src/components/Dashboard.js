@@ -1,4 +1,5 @@
 import React from "react";
+import Card from "./ui/Card";
 import { formatBRL } from "../utils/formatters";
 
 export default function Dashboard({ d, salary, balance, daily, totalExp, remDays }) {
@@ -47,7 +48,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           </p>
         </div>
 
-        <div
+        <Card
           style={{
             background: "linear-gradient(135deg, #d6efe1 0%, #e8f4f8 100%)",
             border: "1px solid rgba(61,140,95,0.2)",
@@ -127,7 +128,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
               />
             </div>
           </div>
-        </div>
+        </Card>
 
         <div
           style={{
@@ -143,7 +144,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             { label: "Saldo", value: balance, color: balance >= 0 ? "#2e7d52" : "#c0392b" },
             { label: "Investido", value: totalInv, color: "#3b7dd8" },
           ].map((item) => (
-            <div
+            <Card
               key={item.label}
               style={{
                 background: "#fff",
@@ -159,11 +160,11 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
               <p style={{ fontSize: "16px", fontWeight: "bold", color: item.color }}>
                 {formatBRL(item.value)}
               </p>
-            </div>
+            </Card>
           ))}
         </div>
 
-        <div
+        <Card
           style={{
             background: "#fff",
             borderRadius: "18px",
@@ -184,9 +185,9 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
               ? `${topCategoryName} já consumiu ${formatBRL(topCategoryValue)} no mês.`
               : "Ainda não há dados suficientes."}
           </p>
-        </div>
+        </Card>
 
-        <div
+        <Card
           style={{
             background: "#fff",
             borderRadius: "18px",
@@ -233,7 +234,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                 </div>
               ))
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );
