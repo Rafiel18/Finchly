@@ -1,8 +1,11 @@
 import React from "react";
 import Card from "./ui/Card";
+import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
 export default function Dashboard({ d, salary, balance, daily, totalExp, remDays }) {
+  const t = useTheme();
+
   const expenses = Array.isArray(d?.expenses) ? d.expenses : [];
   const investments = Array.isArray(d?.investments) ? d.investments : [];
 
@@ -22,40 +25,40 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
   const status =
     salary <= 0
-      ? { label: "Sem receita", color: "#6b7280", emoji: "🫥" }
+      ? { label: "Sem receita", color: t.textMuted, emoji: "🫥" }
       : totalExp > salary || daily < 0
-      ? { label: "Crítico", color: "#c0392b", emoji: "🚨" }
+      ? { label: "Crítico", color: t.negative, emoji: "🚨" }
       : spentPercent >= 70
-      ? { label: "Atenção", color: "#c45a1a", emoji: "👀" }
-      : { label: "Em dia", color: "#2e7d52", emoji: "🌿" };
+      ? { label: "Atenção", color: t.warning, emoji: "👀" }
+      : { label: "Em dia", color: t.positive, emoji: "🌿" };
 
   return (
     <div
       style={{
         minHeight: "100vh",
-        background: "#f5f7f2",
+        background: t.bg,
         padding: "24px 16px 40px",
         fontFamily: "Arial, sans-serif",
       }}
     >
       <div style={{ maxWidth: "560px", margin: "0 auto" }}>
         <div style={{ marginBottom: "18px" }}>
-          <h1 style={{ fontSize: "28px", color: "#1f2937", marginBottom: "4px" }}>
+          <h1 style={{ fontSize: "28px", color: t.text, marginBottom: "4px" }}>
             Visão Geral
           </h1>
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>
+          <p style={{ color: t.textSub, fontSize: "14px" }}>
             Seu resumo financeiro do mês
           </p>
         </div>
 
         <Card
           style={{
-            background: "linear-gradient(135deg, #d6efe1 0%, #e8f4f8 100%)",
-            border: "1px solid rgba(61,140,95,0.2)",
+            background: t.heroGrad,
+            border: `1px solid ${t.heroBorder}`,
             borderRadius: "24px",
             padding: "22px",
             marginBottom: "16px",
-            boxShadow: "0 4px 14px rgba(0,0,0,0.06)",
+            boxShadow: t.shadow,
           }}
         >
           <div
@@ -75,21 +78,21 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             </span>
           </div>
 
-          <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "6px" }}>
+          <p style={{ fontSize: "12px", color: t.textSub, marginBottom: "6px" }}>
             Pode gastar por dia
           </p>
           <p
             style={{
               fontSize: "42px",
               fontWeight: "bold",
-              color: daily >= 0 ? "#2e7d52" : "#c0392b",
+              color: daily >= 0 ? t.positive : t.negative,
               marginBottom: "8px",
             }}
           >
             {formatBRL(daily)}
           </p>
 
-          <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "14px" }}>
+          <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "14px" }}>
             Restam {remDays} dias no mês
           </p>
 
@@ -99,7 +102,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                 display: "flex",
                 justifyContent: "space-between",
                 fontSize: "12px",
-                color: "#6b7280",
+                color: t.textSub,
                 marginBottom: "6px",
               }}
             >
@@ -122,8 +125,8 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                   height: "100%",
                   background:
                     spentPercent >= 90
-                      ? "linear-gradient(90deg, #c45a1a, #c0392b)"
-                      : "linear-gradient(90deg, #3d8c5f, #3b7dd8)",
+                      ? `linear-gradient(90deg, ${t.warning}, ${t.negative})`
+                      : `linear-gradient(90deg, ${t.accent}, ${t.accentBlue})`,
                 }}
               />
             </div>
@@ -139,22 +142,22 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           }}
         >
           {[
-            { label: "Receita", value: salary, color: "#2e7d52" },
-            { label: "Gastos", value: totalExp, color: "#c45a1a" },
-            { label: "Saldo", value: balance, color: balance >= 0 ? "#2e7d52" : "#c0392b" },
-            { label: "Investido", value: totalInv, color: "#3b7dd8" },
+            { label: "Receita", value: salary, color: t.positive },
+            { label: "Gastos", value: totalExp, color: t.warning },
+            { label: "Saldo", value: balance, color: balance >= 0 ? t.positive : t.negative },
+            { label: "Investido", value: totalInv, color: t.accentBlue },
           ].map((item) => (
             <Card
               key={item.label}
               style={{
-                background: "#fff",
+                background: t.bgCard,
                 borderRadius: "18px",
                 padding: "16px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-                border: "1px solid #ececec",
+                boxShadow: t.shadowCard,
+                border: `1px solid ${t.border}`,
               }}
             >
-              <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
+              <p style={{ fontSize: "12px", color: t.textSub, marginBottom: "8px" }}>
                 {item.label}
               </p>
               <p style={{ fontSize: "16px", fontWeight: "bold", color: item.color }}>
@@ -166,21 +169,21 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
         <Card
           style={{
-            background: "#fff",
+            background: t.bgCard,
             borderRadius: "18px",
             padding: "16px",
             marginBottom: "16px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-            border: "1px solid #ececec",
+            boxShadow: t.shadowCard,
+            border: `1px solid ${t.border}`,
           }}
         >
-          <p style={{ fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>
+          <p style={{ fontSize: "12px", color: t.textSub, marginBottom: "8px" }}>
             Maior categoria
           </p>
-          <h3 style={{ fontSize: "20px", color: "#1f2937", marginBottom: "6px" }}>
+          <h3 style={{ fontSize: "20px", color: t.text, marginBottom: "6px" }}>
             {topCategoryName}
           </h3>
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>
+          <p style={{ color: t.textSub, fontSize: "14px" }}>
             {topCategoryEntry
               ? `${topCategoryName} já consumiu ${formatBRL(topCategoryValue)} no mês.`
               : "Ainda não há dados suficientes."}
@@ -189,19 +192,19 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
         <Card
           style={{
-            background: "#fff",
+            background: t.bgCard,
             borderRadius: "18px",
             padding: "16px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-            border: "1px solid #ececec",
+            boxShadow: t.shadowCard,
+            border: `1px solid ${t.border}`,
           }}
         >
-          <p style={{ fontSize: "14px", fontWeight: "bold", color: "#1f2937", marginBottom: "12px" }}>
+          <p style={{ fontSize: "14px", fontWeight: "bold", color: t.text, marginBottom: "12px" }}>
             Últimos lançamentos
           </p>
 
           {expenses.length === 0 ? (
-            <p style={{ color: "#6b7280", fontSize: "14px" }}>
+            <p style={{ color: t.textSub, fontSize: "14px" }}>
               Nenhum gasto registrado.
             </p>
           ) : (
@@ -216,19 +219,19 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                     justifyContent: "space-between",
                     alignItems: "center",
                     padding: "10px 0",
-                    borderBottom: "1px solid #f0f0f0",
+                    borderBottom: `1px solid ${t.border}`,
                   }}
                 >
                   <div>
-                    <p style={{ fontSize: "14px", fontWeight: "bold", color: "#1f2937" }}>
+                    <p style={{ fontSize: "14px", fontWeight: "bold", color: t.text }}>
                       {e.description}
                     </p>
-                    <p style={{ fontSize: "12px", color: "#6b7280" }}>
+                    <p style={{ fontSize: "12px", color: t.textSub }}>
                       {e.category} • {e.date}
                     </p>
                   </div>
 
-                  <p style={{ fontSize: "14px", fontWeight: "bold", color: "#c45a1a" }}>
+                  <p style={{ fontSize: "14px", fontWeight: "bold", color: t.warning }}>
                     {formatBRL(e.amount)}
                   </p>
                 </div>
