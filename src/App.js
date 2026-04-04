@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Expenses from "./components/Expenses";
+import DebtCard from "./components/DebtCard";
 import { ThemeContext } from "./context/theme";
 
 const theme = {
@@ -56,6 +57,41 @@ function Placeholder({ titulo }) {
   );
 }
 
+function DebtsTest({ d }) {
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+      {Array.isArray(d?.debts) && d.debts.length > 0 ? (
+        d.debts.map((dbt) => (
+          <DebtCard
+            key={dbt.id}
+            dbt={dbt}
+            editId={null}
+            editVal=""
+            setEditId={() => {}}
+            setEditVal={() => {}}
+            onUpdate={() => {}}
+            onRemove={() => {}}
+          />
+        ))
+      ) : (
+        <div
+          style={{
+            background: "#fff",
+            padding: "24px",
+            borderRadius: "18px",
+            border: "1px solid #ececec",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+            textAlign: "center",
+          }}
+        >
+          <h2 style={{ marginBottom: "8px", color: "#1f2937" }}>Dívidas</h2>
+          <p style={{ color: "#6b7280" }}>Nenhuma dívida de teste cadastrada.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function App() {
   const [tab, setTab] = useState("dashboard");
 
@@ -69,6 +105,18 @@ export default function App() {
       { id: 1, principal: 500 },
       { id: 2, principal: 300 },
     ],
+    debts: [
+  {
+    id: 1,
+    description: "Cartão Nubank",
+    creditor: "Nubank",
+    totalAmount: 1200,
+    installmentValue: 200,
+    totalInstallments: 6,
+    remainingInstallments: 4,
+    dueDay: 10,
+  },
+],
   };
 
   const salary = 2500;
@@ -123,7 +171,7 @@ export default function App() {
           )}
 
           {tab === "expenses" && <Expenses d={dadosTeste} save={() => {}} />}
-          {tab === "debts" && <Placeholder titulo="Dívidas" />}
+          {tab === "debts" && <DebtsTest d={dadosTeste} />}
           {tab === "invest" && <Placeholder titulo="Investimentos" />}
           {tab === "settings" && <Placeholder titulo="Configurações" />}
         </div>
