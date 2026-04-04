@@ -175,7 +175,7 @@ export default function App() {
           {tab === "expenses" && <Expenses d={dadosTeste} save={() => {}} />}
           {tab === "debts" && <DebtsTest d={dadosTeste} />}
           {tab === "invest" && <Investments d={dadosTeste} save={() => {}} />}
-          {tab === "settings" && <Settings d={dadosTeste} save={() => {}} user={{ name: "Rafa", avatar: "🦊" }} />}
+          {tab === "settings" && <Settings d={{}} save={() => {}} user={{ name: "Rafa", avatar: "🦊" }} />}
         </div>
 
         <div
