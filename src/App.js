@@ -30,34 +30,6 @@ const theme = {
   shadowCard: "0 4px 12px rgba(0,0,0,0.06)",
 };
 
-function Placeholder({ titulo }) {
-  return (
-    <div
-      style={{
-        minHeight: "60vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          padding: "24px",
-          borderRadius: "18px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-          border: "1px solid #ececec",
-          textAlign: "center",
-        }}
-      >
-        <h2 style={{ marginBottom: "8px", color: "#1f2937" }}>{titulo}</h2>
-        <p style={{ color: "#6b7280" }}>Tela em reconexão controlada</p>
-      </div>
-    </div>
-  );
-}
-
 function DebtsTest({ d }) {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
