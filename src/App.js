@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
+import Expenses from "./components/Expenses";
 import { ThemeContext } from "./context/theme";
 
 const theme = {
@@ -121,7 +122,7 @@ export default function App() {
             />
           )}
 
-          {tab === "expenses" && <Placeholder titulo="Gastos" />}
+          {tab === "expenses" && <Expenses d={dadosTeste} save={() => {}} />}
           {tab === "debts" && <Placeholder titulo="Dívidas" />}
           {tab === "invest" && <Placeholder titulo="Investimentos" />}
           {tab === "settings" && <Placeholder titulo="Configurações" />}
