@@ -4,6 +4,8 @@ import Expenses from "./components/Expenses";
 import DebtCard from "./components/DebtCard";
 import Investments from "./components/Investments";
 import { ThemeContext } from "./context/theme";
+import { defaultData } from "./utils/finance";
+import { daysInMonth, dayOfMonth } from "./utils/date";
 
 const theme = {
   bg: "#f5f7f2",
@@ -58,7 +60,7 @@ function DebtsTest({ d }) {
           }}
         >
           <h2 style={{ marginBottom: "8px", color: "#1f2937" }}>Dívidas</h2>
-          <p style={{ color: "#6b7280" }}>Nenhuma dívida de teste cadastrada.</p>
+          <p style={{ color: "#6b7280" }}>Nenhuma dívida cadastrada.</p>
         </div>
       )}
     </div>
@@ -95,36 +97,41 @@ function SettingsTest() {
 
 export default function App() {
   const [tab, setTab] = useState("dashboard");
+  const [dadosTeste] = useState(() => {
+    const base = defaultData();
 
-  const dadosTeste = {
-    expenses: [
-      { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
-      { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
-      { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
-    ],
-    investments: [
-      { id: 1, principal: 500 },
-      { id: 2, principal: 300 },
-    ],
-    debts: [
-  {
-    id: 1,
-    description: "Cartão Nubank",
-    creditor: "Nubank",
-    totalAmount: 1200,
-    installmentValue: 200,
-    totalInstallments: 6,
-    remainingInstallments: 4,
-    dueDay: 10,
-  },
-],
-  };
+    return {
+      ...base,
+      salary: 2500,
+      expenses: [
+        { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
+        { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
+        { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
+      ],
+      investments: [
+        { id: 1, principal: 500 },
+        { id: 2, principal: 300 },
+      ],
+      debts: [
+        {
+          id: 1,
+          description: "Cartão Nubank",
+          creditor: "Nubank",
+          totalAmount: 1200,
+          installmentValue: 200,
+          totalInstallments: 6,
+          remainingInstallments: 4,
+          dueDay: 10,
+        },
+      ],
+    };
+  });
 
-  const salary = 2500;
-  const totalExp = 465;
-  const balance = 2035;
-  const remDays = 25;
-  const daily = 80;
+  const salary = Number(dadosTeste.salary) || 0;
+  const totalExp = dadosTeste.expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
+  const balance = salary - totalExp;
+  const remDays = daysInMonth() - dayOfMonth() + 1;
+  const daily = remDays > 0 ? balance / remDays : 0;
 
   const tabs = [
     { id: "dashboard", label: "Início", icon: "🏠" },
