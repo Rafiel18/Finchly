@@ -8,6 +8,7 @@ import { ThemeContext, useTheme } from "./context/theme";
 import Card from "./components/ui/Card";
 import Inp from "./components/ui/Inp";
 import Btn from "./components/ui/Btn";
+import Dashboard from "./components/Dashboard";
 
 // ─── TEMA ─────────────────────────────────────────────────────────────────────
 
