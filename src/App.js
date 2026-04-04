@@ -32,7 +32,13 @@ const theme = {
   shadowCard: "0 4px 12px rgba(0,0,0,0.06)",
 };
 
-function DebtsTest({ d }) {
+function DebtsTest({ d, save }) {
+  const removeDebt = (id) => {
+    save({
+      debts: d.debts.filter((dbt) => dbt.id !== id),
+    });
+  };
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
       {Array.isArray(d?.debts) && d.debts.length > 0 ? (
@@ -45,7 +51,7 @@ function DebtsTest({ d }) {
             setEditId={() => {}}
             setEditVal={() => {}}
             onUpdate={() => {}}
-            onRemove={() => {}}
+            onRemove={removeDebt}
           />
         ))
       ) : (
@@ -97,7 +103,7 @@ function SettingsTest() {
 
 export default function App() {
   const [tab, setTab] = useState("dashboard");
-  const [dadosTeste] = useState(() => {
+  const [dados, setDados] = useState(() => {
     const base = defaultData();
 
     return {
@@ -127,8 +133,15 @@ export default function App() {
     };
   });
 
-  const salary = Number(dadosTeste.salary) || 0;
-  const totalExp = dadosTeste.expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
+  const save = (patch) => {
+    setDados((prev) => ({
+      ...prev,
+      ...patch,
+    }));
+  };
+
+  const salary = Number(dados.salary) || 0;
+  const totalExp = dados.expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
   const balance = salary - totalExp;
   const remDays = daysInMonth() - dayOfMonth() + 1;
   const daily = remDays > 0 ? balance / remDays : 0;
@@ -169,7 +182,7 @@ export default function App() {
         <div style={{ flex: 1, padding: "16px 16px 100px" }}>
           {tab === "dashboard" && (
             <Dashboard
-              d={dadosTeste}
+              d={dados}
               salary={salary}
               balance={balance}
               daily={daily}
@@ -178,9 +191,9 @@ export default function App() {
             />
           )}
 
-          {tab === "expenses" && <Expenses d={dadosTeste} save={() => {}} />}
-          {tab === "debts" && <DebtsTest d={dadosTeste} />}
-          {tab === "invest" && <Investments d={dadosTeste} save={() => {}} />}
+          {tab === "expenses" && <Expenses d={dados} save={save} />}
+          {tab === "debts" && <DebtsTest d={dados} save={save} />}
+          {tab === "invest" && <Investments d={dados} save={save} />}
           {tab === "settings" && <SettingsTest />}
         </div>
 
