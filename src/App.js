@@ -1,29 +1,24 @@
 import React from "react";
+import Dashboard from "./components/Dashboard";
 
 export default function App() {
+  const dadosTeste = {
+    expenses: [
+      { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
+      { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
+      { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
+    ],
+    investments: [{ id: 1, principal: 500 }],
+  };
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#f5f7f2",
-        fontFamily: "Arial, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#ffffff",
-          padding: "24px",
-          borderRadius: "16px",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-          textAlign: "center",
-        }}
-      >
-        <h1 style={{ marginBottom: "8px", color: "#222" }}>Finchly</h1>
-        <p style={{ color: "#666" }}>App funcionando 🎉</p>
-      </div>
-    </div>
+    <Dashboard
+      d={dadosTeste}
+      salary={2500}
+      balance={2035}
+      daily={80}
+      totalExp={465}
+      remDays={25}
+    />
   );
 }
