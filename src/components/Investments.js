@@ -429,31 +429,3 @@ export default function Investments({ d, save }) {
     </div>
   );
 }
-
-// ─── ROOT ─────────────────────────────────────────────────────────────────────
-export default function Root() {
-  const [user, setUser] = useState(null);
-  const [theme, setTheme] = useState("light");
-  const t = theme === "light" ? LIGHT : DARK;
-  const toggleTheme = () => setTheme((th) => (th === "light" ? "dark" : "light"));
- 
-  return (
-    <ThemeContext.Provider value={t}>
-      {user ? (
-        <App
-          user={user}
-          onLogout={() => setUser(null)}
-          theme={theme}
-          toggleTheme={toggleTheme}
-        />
-      ) : (
-        <LoginScreen
-          onLogin={setUser}
-          theme={theme}
-          toggleTheme={toggleTheme}
-        />
-      )}
-    </ThemeContext.Provider>
-  );
-}
-
