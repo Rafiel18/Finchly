@@ -5,9 +5,9 @@ import { daysInMonth, dayOfMonth } from "./utils/date";
 import { ThemeContext, useTheme } from "./context/theme";
 
 import Dashboard from "./components/Dashboard";
-import Expenses from "./components/Expenses";
-import Investments from "./components/Investments";
-import Settings from "./components/Settings";
+// import Expenses from "./components/Expenses";
+// import Investments from "./components/Investments";
+// import Settings from "./components/Settings";
 import DebtCard from "./components/DebtCard";
 
 import Card from "./components/ui/Card";
