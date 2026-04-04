@@ -6,6 +6,7 @@ import Investments from "./components/Investments";
 import { ThemeContext } from "./context/theme";
 import { defaultData } from "./utils/finance";
 import { daysInMonth, dayOfMonth } from "./utils/date";
+import { useStorage } from "./hooks/useStorage";
 
 const theme = {
   bg: "#f5f7f2",
@@ -103,45 +104,49 @@ function SettingsTest() {
 
 export default function App() {
   const [tab, setTab] = useState("dashboard");
-  const [dados, setDados] = useState(() => {
-    const base = defaultData();
 
-    return {
-      ...base,
-      salary: 2500,
-      expenses: [
-        { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
-        { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
-        { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
-      ],
-      investments: [
-        { id: 1, principal: 500 },
-        { id: 2, principal: 300 },
-      ],
-      debts: [
-        {
-          id: 1,
-          description: "Cartão Nubank",
-          creditor: "Nubank",
-          totalAmount: 1200,
-          installmentValue: 200,
-          totalInstallments: 6,
-          remainingInstallments: 4,
-          dueDay: 10,
-        },
-      ],
-    };
-  });
+  const [dados, setDados] = useStorage("finchly_demo_data");
+
+  const d =
+    dados ||
+    (() => {
+      const base = defaultData();
+      return {
+        ...base,
+        salary: 2500,
+        expenses: [
+          { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
+          { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
+          { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
+        ],
+        investments: [
+          { id: 1, principal: 500 },
+          { id: 2, principal: 300 },
+        ],
+        debts: [
+          {
+            id: 1,
+            description: "Cartão Nubank",
+            creditor: "Nubank",
+            totalAmount: 1200,
+            installmentValue: 200,
+            totalInstallments: 6,
+            remainingInstallments: 4,
+            dueDay: 10,
+          },
+        ],
+      };
+    })();
 
   const save = (patch) => {
-    setDados((prev) => ({
-      ...prev,
+    setDados({
+      ...d,
       ...patch,
-    }));
+    });
   };
 
-  const salary = Number(dados.salary) || 0;
-  const totalExp = dados.expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
+  const salary = Number(d.salary) || 0;
+  const totalExp = d.expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
   const balance = salary - totalExp;
   const remDays = daysInMonth() - dayOfMonth() + 1;
   const daily = remDays > 0 ? balance / remDays : 0;
@@ -182,7 +187,7 @@ export default function App() {
         <div style={{ flex: 1, padding: "16px 16px 100px" }}>
           {tab === "dashboard" && (
             <Dashboard
-              d={dados}
+              d={d}
               salary={salary}
               balance={balance}
               daily={daily}
@@ -191,9 +196,9 @@ export default function App() {
             />
           )}
 
-          {tab === "expenses" && <Expenses d={dados} save={save} />}
-          {tab === "debts" && <DebtsTest d={dados} save={save} />}
-          {tab === "invest" && <Investments d={dados} save={save} />}
+          {tab === "expenses" && <Expenses d={d} save={save} />}
+          {tab === "debts" && <DebtsTest d={d} save={save} />}
+          {tab === "invest" && <Investments d={d} save={save} />}
           {tab === "settings" && <SettingsTest />}
         </div>
 
