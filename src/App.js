@@ -10,9 +10,7 @@ import Inp from "./components/ui/Inp";
 import Btn from "./components/ui/Btn";
 
 // ─── TEMA ─────────────────────────────────────────────────────────────────────
-const ThemeContext = createContext();
-const useTheme = () => useContext(ThemeContext);
- 
+
 const LIGHT = {
   bg: "#F5F7F2",
   bgCard: "#FFFFFF",
@@ -141,41 +139,7 @@ function PieChart({ data }) {
     </div>
   );
 }
- 
-// ─── COMPONENTES BASE ─────────────────────────────────────────────────────────
-function Card({ children, style = {}, onClick }) {
-  const t = useTheme();
-  return (
-    <div onClick={onClick} style={{ background:t.bgCard, border:`1px solid ${t.border}`, borderRadius:"16px", boxShadow:t.shadowCard, ...style }}>
-      {children}
-    </div>
-  );
-}
- 
-function Inp({ type="text", placeholder, value, onChange, onKeyDown, style={} }) {
-  const t = useTheme();
-  return (
-    <input type={type} placeholder={placeholder} value={value} onChange={onChange} onKeyDown={onKeyDown}
-      style={{ width:"100%", background:t.bgInput, border:`1.5px solid ${t.borderInput}`, borderRadius:"12px", padding:"11px 14px", color:t.text, fontSize:"14px", marginBottom:"9px", ...style }} />
-  );
-}
- 
-function Btn({ children, onClick, variant="primary", style={} }) {
-  const t = useTheme();
-  const variants = {
-    primary: { background:`linear-gradient(135deg, ${t.accent}, #2D6E4A)`, color:"#fff" },
-    secondary: { background:t.bgInput, color:t.textSub, border:`1px solid ${t.border}` },
-    danger: { background:`linear-gradient(135deg, #E05A4A, #C0392B)`, color:"#fff" },
-    blue: { background:`linear-gradient(135deg, ${t.accentBlue}, #2C5FA8)`, color:"#fff" },
-    ghost: { background:"transparent", color:t.textSub, border:`1px solid ${t.border}` },
-  };
-  return (
-    <button className="btn" onClick={onClick} style={{ ...variants[variant], padding:"12px 18px", borderRadius:"12px", fontSize:"14px", width:"100%", ...style }}>
-      {children}
-    </button>
-  );
-}
- 
+  
 // ─── LOGIN ────────────────────────────────────────────────────────────────────
 function LoginScreen({ onLogin, theme, toggleTheme }) {
   const t = useTheme();
