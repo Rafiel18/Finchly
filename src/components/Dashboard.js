@@ -18,47 +18,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
     return Math.min((now.getDate() / totalDays) * 100, 100);
   }, []);
 
-  const averageSpentPerExpense = expenses.length > 0 ? totalExp / expenses.length : 0;
-
-  const averageSpentPerDaySoFar = useMemo(() => {
-    const now = new Date();
-    const currentDay = now.getDate();
-    return currentDay > 0 ? totalExp / currentDay : 0;
-  }, [totalExp]);
-
-  const projectedMonthSpend = useMemo(() => {
-    const now = new Date();
-    const currentDay = now.getDate();
-    const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-
-    if (currentDay <= 0) return totalExp;
-    return (totalExp / currentDay) * totalDays;
-  }, [totalExp]);
-
-  const projectedMonthBalance = salary - projectedMonthSpend;
-
-  const categoryMap = useMemo(() => {
-    const map = {};
-
-    expenses.forEach((expense) => {
-      const category = expense.category || "Outros";
-      const amount = Number(expense.amount || 0);
-      map[category] = (map[category] || 0) + amount;
-    });
-
-    return map;
-  }, [expenses]);
-
-  const topCategoryEntry = useMemo(() => {
-    const entries = Object.entries(categoryMap);
-    if (!entries.length) return null;
-    return entries.sort((a, b) => b[1] - a[1])[0];
-  }, [categoryMap]);
-
-  const topCategoryName = topCategoryEntry ? topCategoryEntry[0] : "Nenhuma";
-  const topCategoryValue = topCategoryEntry ? topCategoryEntry[1] : 0;
-  const topCategoryPercent = totalExp > 0 ? (topCategoryValue / totalExp) * 100 : 0;
-
   let status;
   if (salary <= 0) {
     status = {
@@ -95,27 +54,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
       color: t.heroText,
       message: "Seu orçamento está saudável até aqui.",
     };
-  }
-
-  const insights = [];
-
-  if (salary <= 0) {
-    insights.push("Cadastre sua receita mensal para liberar projeções e metas diárias.");
-    if (expenses.length > 0) {
-      insights.push(`Você já registrou ${expenses.length} gasto${expenses.length > 1 ? "s" : ""}.`);
-    }
-  } else {
-    insights.push(`Você já usou ${spentPercent.toFixed(1)}% da sua renda no mês.`);
-    if (topCategoryEntry) {
-      insights.push(
-        `${topCategoryName} é sua maior categoria, com ${topCategoryPercent.toFixed(1)}% dos gastos.`
-      );
-    }
-    if (projectedMonthBalance < 0) {
-      insights.push(`Mantendo esse ritmo, você pode fechar o mês em ${formatBRL(projectedMonthBalance)}.`);
-    } else {
-      insights.push(`Mantendo esse ritmo, a projeção é fechar o mês com ${formatBRL(projectedMonthBalance)}.`);
-    }
   }
 
   const recentExpenses = expenses.slice(-3).reverse();
@@ -159,8 +97,6 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             borderRadius: "24px",
             padding: "24px 20px 18px",
             marginBottom: "16px",
-            position: "relative",
-            overflow: "hidden",
             boxShadow: t.shadow,
           }}
         >
@@ -220,111 +156,13 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           </p>
         </Card>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "12px",
-            marginBottom: "16px",
-          }}
-        >
-          {[
-            { label: "Receita", value: salary, color: t.positive, soft: t.positiveSoft, icon: "💼" },
-            { label: "Gastos", value: totalExp, color: t.warning, soft: t.warningSoft, icon: "💳" },
-            {
-              label: "Saldo",
-              value: balance,
-              color: balance >= 0 ? t.positive : t.negative,
-              soft: balance >= 0 ? t.positiveSoft : t.negativeSoft,
-              icon: "💰",
-            },
-            { label: "Investido", value: totalInv, color: t.accentBlue, soft: t.accentBlueSoft, icon: "🌱" },
-          ].map((c) => (
-            <Card key={c.label} style={{ padding: "16px", background: t.bgCard, border: `1px solid ${t.border}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-                <div
-                  style={{
-                    width: "38px",
-                    height: "38px",
-                    borderRadius: "12px",
-                    background: c.soft,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "18px",
-                  }}
-                >
-                  {c.icon}
-                </div>
-              </div>
-
-              <p
-                style={{
-                  fontSize: "11px",
-                  color: t.textSub,
-                  fontWeight: 800,
-                  letterSpacing: "0.5px",
-                  textTransform: "uppercase",
-                  marginBottom: "8px",
-                }}
-              >
-                {c.label}
-              </p>
-
-              <p style={{ fontSize: "15px", fontWeight: 800, color: c.color, lineHeight: 1.2 }}>
-                {formatBRL(c.value)}
-              </p>
-            </Card>
-          ))}
-        </div>
-
-        <Card style={{ padding: "16px", marginBottom: "12px", background: t.bgCard, border: `1px solid ${t.border}` }}>
-          <p style={{ fontSize: "11px", color: t.textMuted, fontWeight: 800, textTransform: "uppercase", marginBottom: "10px" }}>
-            Insights rápidos
-          </p>
-
-          <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {insights.slice(0, 3).map((item, index) => (
-              <div
-                key={index}
-                style={{
-                  display: "flex",
-                  gap: "10px",
-                  alignItems: "flex-start",
-                  padding: "10px 12px",
-                  borderRadius: "14px",
-                  background: t.bgInput,
-                  border: `1px solid ${t.border}`,
-                }}
-              >
-                <span style={{ fontSize: "16px", lineHeight: 1 }}>
-                  {index === 0 ? "📌" : index === 1 ? "🧠" : "📈"}
-                </span>
-                <p style={{ fontSize: "13px", color: t.textSub, lineHeight: 1.45 }}>{item}</p>
-              </div>
-            ))}
-          </div>
-        </Card>
-
         <Card style={{ padding: "14px", marginTop: "12px", background: t.bgCard, border: `1px solid ${t.border}` }}>
           <p style={{ fontSize: "11px", color: t.textMuted, fontWeight: 800, textTransform: "uppercase", marginBottom: "8px" }}>
             Ritmo do mês
           </p>
 
-          <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "6px" }}>
-            Tempo do mês: {monthProgress.toFixed(0)}%
-          </p>
-          <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "6px" }}>
-            Média por dia: {formatBRL(averageSpentPerDaySoFar)}
-          </p>
-          <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "6px" }}>
-            Ticket médio: {formatBRL(averageSpentPerExpense)}
-          </p>
-          <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "6px" }}>
-            Projeção do mês: {formatBRL(projectedMonthBalance)}
-          </p>
           <p style={{ fontSize: "13px", color: t.textSub }}>
-            Maior categoria: {topCategoryName} {topCategoryEntry ? `(${formatBRL(topCategoryValue)})` : ""}
+            Tempo do mês: {monthProgress.toFixed(0)}%
           </p>
         </Card>
 
