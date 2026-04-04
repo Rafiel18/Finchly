@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Expenses from "./components/Expenses";
-import DebtCard from "./components/DebtCard";
+import Debts from "./components/Debts";
 import Investments from "./components/Investments";
 import Settings from "./components/Settings";
 import { ThemeContext } from "./context/theme";
@@ -61,47 +61,6 @@ function createInitialData() {
       },
     ],
   };
-}
-
-function DebtsTest({ d, save }) {
-  const removeDebt = (id) => {
-    save({
-      debts: d.debts.filter((dbt) => dbt.id !== id),
-    });
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-      {Array.isArray(d?.debts) && d.debts.length > 0 ? (
-        d.debts.map((dbt) => (
-          <DebtCard
-            key={dbt.id}
-            dbt={dbt}
-            editId={null}
-            editVal=""
-            setEditId={() => {}}
-            setEditVal={() => {}}
-            onUpdate={() => {}}
-            onRemove={removeDebt}
-          />
-        ))
-      ) : (
-        <div
-          style={{
-            background: "#fff",
-            padding: "24px",
-            borderRadius: "18px",
-            border: "1px solid #ececec",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
-            textAlign: "center",
-          }}
-        >
-          <h2 style={{ marginBottom: "8px", color: "#1f2937" }}>Dívidas</h2>
-          <p style={{ color: "#6b7280" }}>Nenhuma dívida cadastrada.</p>
-        </div>
-      )}
-    </div>
-  );
 }
 
 function LoginScreen({ onLogin }) {
@@ -293,7 +252,7 @@ function MainApp({ user, onLogout }) {
         )}
 
         {tab === "expenses" && <Expenses d={d} save={save} />}
-        {tab === "debts" && <DebtsTest d={d} save={save} />}
+        {tab === "debts" && <Debts d={d} save={save} />}
         {tab === "invest" && <Investments d={d} save={save} />}
         {tab === "settings" && <Settings d={d} save={save} user={user} />}
       </div>
