@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import { ThemeContext } from "./context/theme";
 
@@ -27,7 +27,37 @@ const theme = {
   shadowCard: "0 4px 12px rgba(0,0,0,0.06)",
 };
 
+function Placeholder({ titulo }) {
+  return (
+    <div
+      style={{
+        minHeight: "60vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arial, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          padding: "24px",
+          borderRadius: "18px",
+          boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+          border: "1px solid #ececec",
+          textAlign: "center",
+        }}
+      >
+        <h2 style={{ marginBottom: "8px", color: "#1f2937" }}>{titulo}</h2>
+        <p style={{ color: "#6b7280" }}>Tela em reconexão controlada</p>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
+  const [tab, setTab] = useState("dashboard");
+
   const dadosTeste = {
     expenses: [
       { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
@@ -40,16 +70,99 @@ export default function App() {
     ],
   };
 
+  const salary = 2500;
+  const totalExp = 465;
+  const balance = 2035;
+  const remDays = 25;
+  const daily = 80;
+
+  const tabs = [
+    { id: "dashboard", label: "Início", icon: "🏠" },
+    { id: "expenses", label: "Gastos", icon: "💳" },
+    { id: "debts", label: "Dívidas", icon: "📋" },
+    { id: "invest", label: "Invest.", icon: "🌱" },
+    { id: "settings", label: "Config", icon: "⚙️" },
+  ];
+
   return (
     <ThemeContext.Provider value={theme}>
-      <Dashboard
-        d={dadosTeste}
-        salary={2500}
-        balance={2035}
-        daily={80}
-        totalExp={465}
-        remDays={25}
-      />
+      <div
+        style={{
+          minHeight: "100vh",
+          background: theme.bg,
+          color: theme.text,
+          display: "flex",
+          flexDirection: "column",
+          fontFamily: "Arial, sans-serif",
+        }}
+      >
+        <div
+          style={{
+            padding: "14px 16px",
+            borderBottom: `1px solid ${theme.border}`,
+            background: "#ffffffee",
+            position: "sticky",
+            top: 0,
+            zIndex: 10,
+          }}
+        >
+          <h1 style={{ fontSize: "20px", fontWeight: "bold" }}>Finchly</h1>
+        </div>
+
+        <div style={{ flex: 1, padding: "16px 16px 100px" }}>
+          {tab === "dashboard" && (
+            <Dashboard
+              d={dadosTeste}
+              salary={salary}
+              balance={balance}
+              daily={daily}
+              totalExp={totalExp}
+              remDays={remDays}
+            />
+          )}
+
+          {tab === "expenses" && <Placeholder titulo="Gastos" />}
+          {tab === "debts" && <Placeholder titulo="Dívidas" />}
+          {tab === "invest" && <Placeholder titulo="Investimentos" />}
+          {tab === "settings" && <Placeholder titulo="Configurações" />}
+        </div>
+
+        <div
+          style={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: "flex",
+            background: "#ffffffee",
+            borderTop: `1px solid ${theme.border}`,
+            padding: "8px 0 12px",
+          }}
+        >
+          {tabs.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              style={{
+                flex: 1,
+                border: "none",
+                background: "transparent",
+                color: tab === item.id ? theme.accent : theme.textMuted,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: "4px",
+                fontSize: "10px",
+                fontWeight: tab === item.id ? "bold" : "normal",
+                cursor: "pointer",
+              }}
+            >
+              <span style={{ fontSize: "18px" }}>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
     </ThemeContext.Provider>
   );
 }
