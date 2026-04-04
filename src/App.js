@@ -34,8 +34,19 @@ const theme = {
   shadowCard: "0 4px 12px rgba(0,0,0,0.06)",
 };
 
+const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
+
+const tabs = [
+  { id: "dashboard", label: "Início", icon: "🏠" },
+  { id: "expenses", label: "Gastos", icon: "💳" },
+  { id: "debts", label: "Dívidas", icon: "📋" },
+  { id: "invest", label: "Invest.", icon: "🌱" },
+  { id: "settings", label: "Config", icon: "⚙️" },
+];
+
 function createInitialData() {
   const base = defaultData();
+
   return {
     ...base,
     salary: 2500,
@@ -66,11 +77,9 @@ function createInitialData() {
 function LoginScreen({ onLogin }) {
   const [users, setUsers] = useStorage("finchly_users");
   const [name, setName] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState("🌿");
+  const [selectedAvatar, setSelectedAvatar] = useState("🦊");
 
   const existingUsers = users || {};
-
-  const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
 
   const createUser = () => {
     if (!name.trim()) return;
@@ -130,7 +139,14 @@ function LoginScreen({ onLogin }) {
             🌿
           </div>
 
-          <h1 style={{ fontSize: "28px", marginBottom: "6px", color: "#1f2937", fontWeight: 800 }}>
+          <h1
+            style={{
+              fontSize: "28px",
+              marginBottom: "6px",
+              color: "#1f2937",
+              fontWeight: 800,
+            }}
+          >
             Finchly
           </h1>
 
@@ -189,7 +205,9 @@ function LoginScreen({ onLogin }) {
 
                   <div>
                     <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
-                    <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>Entrar nesse perfil</p>
+                    <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>
+                      Entrar nesse perfil
+                    </p>
                   </div>
                 </button>
               ))
@@ -247,7 +265,10 @@ function LoginScreen({ onLogin }) {
                 key={avatar}
                 onClick={() => setSelectedAvatar(avatar)}
                 style={{
-                  border: selectedAvatar === avatar ? `2px solid ${theme.accent}` : "1px solid #ececec",
+                  border:
+                    selectedAvatar === avatar
+                      ? `2px solid ${theme.accent}`
+                      : "1px solid #ececec",
                   background: selectedAvatar === avatar ? theme.accentSoft : "#fff",
                   borderRadius: "12px",
                   height: "44px",
@@ -272,6 +293,7 @@ function LoginScreen({ onLogin }) {
               marginBottom: "12px",
               fontSize: "14px",
               background: "#fff",
+              boxSizing: "border-box",
             }}
           />
 
@@ -311,18 +333,10 @@ function MainApp({ user, onLogout }) {
   };
 
   const salary = Number(d.salary) || 0;
-  const totalExp = d.expenses.reduce((s, e) => s + Number(e.amount || 0), 0);
+  const totalExp = d.expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
   const balance = salary - totalExp;
   const remDays = daysInMonth() - dayOfMonth() + 1;
   const daily = remDays > 0 ? balance / remDays : 0;
-
-  const tabs = [
-    { id: "dashboard", label: "Início", icon: "🏠" },
-    { id: "expenses", label: "Gastos", icon: "💳" },
-    { id: "debts", label: "Dívidas", icon: "📋" },
-    { id: "invest", label: "Invest.", icon: "🌱" },
-    { id: "settings", label: "Config", icon: "⚙️" },
-  ];
 
   return (
     <div
@@ -405,17 +419,17 @@ function MainApp({ user, onLogout }) {
         </button>
       </div>
 
-        <div
-          style={{
-            flex: 1,
-            padding: "18px 16px 120px",
-            maxWidth: "720px",
-            width: "100%",
-            margin: "0 auto",
-            boxSizing: "border-box",
-            transition: "opacity 0.18s ease, transform 0.18s ease",
-  }}
->
+      <div
+        style={{
+          flex: 1,
+          padding: "18px 16px 120px",
+          maxWidth: "720px",
+          width: "100%",
+          margin: "0 auto",
+          boxSizing: "border-box",
+          transition: "opacity 0.18s ease, transform 0.18s ease",
+        }}
+      >
         {tab === "dashboard" && (
           <Dashboard
             d={d}
