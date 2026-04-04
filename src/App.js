@@ -4,6 +4,10 @@ import { formatBRL, formatPct } from "./utils/formatters";
 import { todayStr, daysInMonth, dayOfMonth } from "./utils/date";
 import { defaultData, calcProj } from "./utils/finance";
 import { CDI_AA, CATS, CHART_COLORS, INV_TYPES } from "./constants/finance";
+import { ThemeContext, useTheme } from "./context/theme";
+import Card from "./components/ui/Card";
+import Inp from "./components/ui/Inp";
+import Btn from "./components/ui/Btn";
 
 // ─── TEMA ─────────────────────────────────────────────────────────────────────
 const ThemeContext = createContext();
