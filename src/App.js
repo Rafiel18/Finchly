@@ -271,10 +271,12 @@ function LoginScreen({ onLogin, theme, toggleTheme }) {
                 ))}
               </div>
 
-              <Btn onClick={() => {
-                setStep("register");
-                setErr("");
-              }}>
+              <Btn
+                onClick={() => {
+                  setStep("register");
+                  setErr("");
+                }}
+              >
                 + Criar nova conta
               </Btn>
             </>
@@ -835,4 +837,3 @@ export default function Root() {
     </ThemeContext.Provider>
   );
 }
-
