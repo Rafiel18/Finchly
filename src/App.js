@@ -8,7 +8,10 @@ export default function App() {
       { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
       { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
     ],
-    investments: [{ id: 1, principal: 500 }],
+    investments: [
+      { id: 1, principal: 500 },
+      { id: 2, principal: 300 },
+    ],
   };
 
   return (
