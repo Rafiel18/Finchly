@@ -9,7 +9,7 @@ import { defaultData } from "./utils/finance";
 import { daysInMonth, dayOfMonth } from "./utils/date";
 import { useStorage } from "./hooks/useStorage";
 
-const theme = {
+const LIGHT_THEME = {
   bg: "#f5f7f2",
   bgCard: "#ffffff",
   bgInput: "#f0f4ee",
@@ -32,6 +32,37 @@ const theme = {
   heroText: "#2e7d52",
   shadow: "0 4px 14px rgba(0,0,0,0.06)",
   shadowCard: "0 4px 12px rgba(0,0,0,0.06)",
+  topBarBg: "rgba(255,255,255,0.88)",
+  navBg: "rgba(255,255,255,0.92)",
+  buttonBg: "#ffffff",
+};
+
+const DARK_THEME = {
+  bg: "#0f1412",
+  bgCard: "#171d1a",
+  bgInput: "#1d2521",
+  border: "#28312c",
+  text: "#eef4f0",
+  textSub: "#b6c5bb",
+  textMuted: "#7d8d83",
+  accent: "#57b97d",
+  accentSoft: "rgba(87,185,125,0.14)",
+  accentBlue: "#5f99e8",
+  accentBlueSoft: "rgba(95,153,232,0.16)",
+  positive: "#61c48b",
+  positiveSoft: "rgba(97,196,139,0.14)",
+  warning: "#f0a24f",
+  warningSoft: "rgba(240,162,79,0.14)",
+  negative: "#ea6b60",
+  negativeSoft: "rgba(234,107,96,0.14)",
+  heroGrad: "linear-gradient(135deg, #183225 0%, #162734 100%)",
+  heroBorder: "rgba(87,185,125,0.18)",
+  heroText: "#7fd8a1",
+  shadow: "0 4px 18px rgba(0,0,0,0.24)",
+  shadowCard: "0 4px 12px rgba(0,0,0,0.22)",
+  topBarBg: "rgba(23,29,26,0.88)",
+  navBg: "rgba(23,29,26,0.92)",
+  buttonBg: "#1b221f",
 };
 
 const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
@@ -74,7 +105,7 @@ function createInitialData() {
   };
 }
 
-function LoginScreen({ onLogin, users, setUsers }) {
+function LoginScreen({ onLogin, users, setUsers, themeMode, toggleTheme, theme }) {
   const [name, setName] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState("🦊");
 
@@ -120,13 +151,30 @@ function LoginScreen({ onLogin, users, setUsers }) {
         style={{
           width: "100%",
           maxWidth: "380px",
-          background: "#fff",
+          background: theme.bgCard,
           borderRadius: "24px",
           padding: "24px",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-          border: "1px solid #ececec",
+          boxShadow: theme.shadow,
+          border: `1px solid ${theme.border}`,
         }}
       >
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "8px" }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: theme.buttonBg,
+              border: `1px solid ${theme.border}`,
+              borderRadius: "12px",
+              padding: "8px 10px",
+              cursor: "pointer",
+              color: theme.textSub,
+              fontWeight: 700,
+            }}
+          >
+            {themeMode === "light" ? "🌙 Escuro" : "☀️ Claro"}
+          </button>
+        </div>
+
         <div style={{ textAlign: "center", marginBottom: "22px" }}>
           <div
             style={{
@@ -148,14 +196,14 @@ function LoginScreen({ onLogin, users, setUsers }) {
             style={{
               fontSize: "28px",
               marginBottom: "6px",
-              color: "#1f2937",
+              color: theme.text,
               fontWeight: 800,
             }}
           >
             Finchly
           </h1>
 
-          <p style={{ color: "#6b7280", fontSize: "14px" }}>
+          <p style={{ color: theme.textSub, fontSize: "14px" }}>
             Escolha um perfil ou crie um novo
           </p>
         </div>
@@ -164,7 +212,7 @@ function LoginScreen({ onLogin, users, setUsers }) {
           <p
             style={{
               fontSize: "11px",
-              color: "#9ca3af",
+              color: theme.textMuted,
               fontWeight: 800,
               textTransform: "uppercase",
               marginBottom: "10px",
@@ -179,8 +227,8 @@ function LoginScreen({ onLogin, users, setUsers }) {
                 <div
                   key={user.id}
                   style={{
-                    border: "1px solid #ececec",
-                    background: "#fff",
+                    border: `1px solid ${theme.border}`,
+                    background: theme.bgCard,
                     borderRadius: "14px",
                     padding: "12px 14px",
                     fontSize: "14px",
@@ -188,7 +236,7 @@ function LoginScreen({ onLogin, users, setUsers }) {
                     alignItems: "center",
                     justifyContent: "space-between",
                     gap: "10px",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+                    boxShadow: theme.shadowCard,
                   }}
                 >
                   <button
@@ -223,8 +271,8 @@ function LoginScreen({ onLogin, users, setUsers }) {
                     </div>
 
                     <div>
-                      <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
-                      <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>
+                      <p style={{ margin: 0, color: theme.text, fontWeight: 700 }}>{user.name}</p>
+                      <p style={{ margin: 0, color: theme.textSub, fontSize: "12px" }}>
                         Entrar nesse perfil
                       </p>
                     </div>
@@ -233,9 +281,9 @@ function LoginScreen({ onLogin, users, setUsers }) {
                   <button
                     onClick={() => deleteUser(user.id)}
                     style={{
-                      border: "1px solid #f1c7c2",
-                      background: "#fff5f4",
-                      color: "#c0392b",
+                      border: `1px solid ${theme.negative}40`,
+                      background: theme.negativeSoft,
+                      color: theme.negative,
                       borderRadius: "10px",
                       padding: "8px 10px",
                       cursor: "pointer",
@@ -251,11 +299,11 @@ function LoginScreen({ onLogin, users, setUsers }) {
             ) : (
               <div
                 style={{
-                  border: "1px dashed #d1d5db",
+                  border: `1px dashed ${theme.border}`,
                   borderRadius: "14px",
                   padding: "14px",
                   textAlign: "center",
-                  color: "#6b7280",
+                  color: theme.textSub,
                   fontSize: "13px",
                 }}
               >
@@ -267,8 +315,8 @@ function LoginScreen({ onLogin, users, setUsers }) {
 
         <div
           style={{
-            background: "#fafafa",
-            border: "1px solid #ececec",
+            background: theme.bgInput,
+            border: `1px solid ${theme.border}`,
             borderRadius: "18px",
             padding: "16px",
           }}
@@ -276,7 +324,7 @@ function LoginScreen({ onLogin, users, setUsers }) {
           <p
             style={{
               fontSize: "11px",
-              color: "#9ca3af",
+              color: theme.textMuted,
               fontWeight: 800,
               textTransform: "uppercase",
               marginBottom: "10px",
@@ -285,7 +333,7 @@ function LoginScreen({ onLogin, users, setUsers }) {
             Novo perfil
           </p>
 
-          <p style={{ fontSize: "13px", color: "#6b7280", marginBottom: "10px" }}>
+          <p style={{ fontSize: "13px", color: theme.textSub, marginBottom: "10px" }}>
             Escolha um avatar
           </p>
 
@@ -305,8 +353,9 @@ function LoginScreen({ onLogin, users, setUsers }) {
                   border:
                     selectedAvatar === avatar
                       ? `2px solid ${theme.accent}`
-                      : "1px solid #ececec",
-                  background: selectedAvatar === avatar ? theme.accentSoft : "#fff",
+                      : `1px solid ${theme.border}`,
+                  background: selectedAvatar === avatar ? theme.accentSoft : theme.bgCard,
+                  color: theme.text,
                   borderRadius: "12px",
                   height: "44px",
                   cursor: "pointer",
@@ -326,10 +375,11 @@ function LoginScreen({ onLogin, users, setUsers }) {
               width: "100%",
               padding: "12px",
               borderRadius: "12px",
-              border: "1px solid #ececec",
+              border: `1px solid ${theme.border}`,
               marginBottom: "12px",
               fontSize: "14px",
-              background: "#fff",
+              background: theme.bgCard,
+              color: theme.text,
               boxSizing: "border-box",
             }}
           />
@@ -356,7 +406,7 @@ function LoginScreen({ onLogin, users, setUsers }) {
   );
 }
 
-function MainApp({ user, onLogout, onUpdateUser }) {
+function MainApp({ user, onLogout, onUpdateUser, themeMode, toggleTheme, theme }) {
   const [tab, setTab] = useState("dashboard");
   const [dados, setDados] = useStorage(`finchly_data_${user.id}`);
 
@@ -391,7 +441,7 @@ function MainApp({ user, onLogout, onUpdateUser }) {
         style={{
           padding: "14px 16px",
           borderBottom: `1px solid ${theme.border}`,
-          background: "rgba(255,255,255,0.88)",
+          background: theme.topBarBg,
           backdropFilter: "blur(14px)",
           WebkitBackdropFilter: "blur(14px)",
           position: "sticky",
@@ -439,21 +489,39 @@ function MainApp({ user, onLogout, onUpdateUser }) {
           </div>
         </div>
 
-        <button
-          onClick={onLogout}
-          style={{
-            background: "#fff",
-            border: `1px solid ${theme.border}`,
-            borderRadius: "12px",
-            padding: "9px 12px",
-            cursor: "pointer",
-            fontWeight: 700,
-            color: theme.textSub,
-            boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
-          }}
-        >
-          Sair
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <button
+            onClick={toggleTheme}
+            style={{
+              background: theme.buttonBg,
+              border: `1px solid ${theme.border}`,
+              borderRadius: "12px",
+              padding: "9px 10px",
+              cursor: "pointer",
+              fontWeight: 700,
+              color: theme.textSub,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+            }}
+          >
+            {themeMode === "light" ? "🌙" : "☀️"}
+          </button>
+
+          <button
+            onClick={onLogout}
+            style={{
+              background: theme.buttonBg,
+              border: `1px solid ${theme.border}`,
+              borderRadius: "12px",
+              padding: "9px 12px",
+              cursor: "pointer",
+              fontWeight: 700,
+              color: theme.textSub,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+            }}
+          >
+            Sair
+          </button>
+        </div>
       </div>
 
       <div
@@ -501,7 +569,7 @@ function MainApp({ user, onLogout, onUpdateUser }) {
           maxWidth: "700px",
           margin: "0 auto",
           display: "flex",
-          background: "rgba(255,255,255,0.92)",
+          background: theme.navBg,
           backdropFilter: "blur(16px)",
           WebkitBackdropFilter: "blur(16px)",
           border: `1px solid ${theme.border}`,
@@ -561,7 +629,15 @@ function MainApp({ user, onLogout, onUpdateUser }) {
 
 export default function App() {
   const [users, setUsers] = useStorage("finchly_users");
+  const [themeMode, setThemeMode] = useStorage("finchly_theme_mode");
   const [currentUser, setCurrentUser] = useState(null);
+
+  const resolvedThemeMode = themeMode === "dark" ? "dark" : "light";
+  const theme = resolvedThemeMode === "dark" ? DARK_THEME : LIGHT_THEME;
+
+  const toggleTheme = () => {
+    setThemeMode(resolvedThemeMode === "dark" ? "light" : "dark");
+  };
 
   const handleUpdateUser = (patch) => {
     if (!currentUser) return;
@@ -587,12 +663,18 @@ export default function App() {
           user={currentUser}
           onLogout={() => setCurrentUser(null)}
           onUpdateUser={handleUpdateUser}
+          themeMode={resolvedThemeMode}
+          toggleTheme={toggleTheme}
+          theme={theme}
         />
       ) : (
         <LoginScreen
           onLogin={setCurrentUser}
           users={users}
           setUsers={setUsers}
+          themeMode={resolvedThemeMode}
+          toggleTheme={toggleTheme}
+          theme={theme}
         />
       )}
     </ThemeContext.Provider>
