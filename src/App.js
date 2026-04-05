@@ -35,6 +35,10 @@ const LIGHT_THEME = {
   topBarBg: "rgba(255,255,255,0.88)",
   navBg: "rgba(255,255,255,0.92)",
   buttonBg: "#ffffff",
+  glassCard: "rgba(255,255,255,0.72)",
+  softTile: "#f0f4ee",
+  softTile2: "#ffffff",
+  avatarTile: "#ffffff",
 };
 
 const DARK_THEME = {
@@ -46,15 +50,15 @@ const DARK_THEME = {
   textSub: "#b6c5bb",
   textMuted: "#7d8d83",
   accent: "#57b97d",
-  accentSoft: "rgba(87,185,125,0.14)",
+  accentSoft: "#1a2a22",
   accentBlue: "#5f99e8",
-  accentBlueSoft: "rgba(95,153,232,0.16)",
+  accentBlueSoft: "#182433",
   positive: "#61c48b",
-  positiveSoft: "rgba(97,196,139,0.14)",
+  positiveSoft: "#1b2b22",
   warning: "#f0a24f",
-  warningSoft: "rgba(240,162,79,0.14)",
+  warningSoft: "#33261a",
   negative: "#ea6b60",
-  negativeSoft: "rgba(234,107,96,0.14)",
+  negativeSoft: "#331d1b",
   heroGrad: "linear-gradient(135deg, #183225 0%, #162734 100%)",
   heroBorder: "rgba(87,185,125,0.18)",
   heroText: "#7fd8a1",
@@ -63,6 +67,10 @@ const DARK_THEME = {
   topBarBg: "rgba(23,29,26,0.88)",
   navBg: "rgba(23,29,26,0.92)",
   buttonBg: "#1b221f",
+  glassCard: "rgba(255,255,255,0.04)",
+  softTile: "#202925",
+  softTile2: "#1b2320",
+  avatarTile: "#202925",
 };
 
 const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
