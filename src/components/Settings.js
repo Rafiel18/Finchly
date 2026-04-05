@@ -17,6 +17,7 @@ export default function Settings({
 
   const avatarTile = t.avatarTile || t.bgCard;
   const softTile = t.softTile || t.bgInput;
+  const softTile2 = t.softTile2 || t.bgCard;
 
   const handleSaveSalary = () => {
     const salary = Number(salaryInput);
@@ -57,7 +58,7 @@ export default function Settings({
             Configurações
           </h2>
           <p style={{ color: t.textSub, fontSize: "14px" }}>
-            Ajustes básicos do seu perfil e finanças
+            Ajustes do perfil, finanças e preferências
           </p>
         </div>
 
@@ -67,6 +68,7 @@ export default function Settings({
             marginBottom: "14px",
             background: t.bgCard,
             border: `1px solid ${t.border}`,
+            boxShadow: t.shadowCard,
           }}
         >
           <p
@@ -75,37 +77,43 @@ export default function Settings({
               color: t.textMuted,
               fontWeight: 800,
               textTransform: "uppercase",
-              marginBottom: "10px",
+              letterSpacing: "0.5px",
+              marginBottom: "12px",
             }}
           >
-            Usuário
+            Perfil
           </p>
 
           <div
             style={{
               display: "flex",
               alignItems: "center",
-              gap: "10px",
-              marginBottom: "14px",
+              gap: "12px",
+              marginBottom: "16px",
+              padding: "12px",
+              borderRadius: "16px",
+              background: softTile,
+              border: `1px solid ${t.border}`,
             }}
           >
             <div
               style={{
-                width: "46px",
-                height: "46px",
-                borderRadius: "14px",
+                width: "54px",
+                height: "54px",
+                borderRadius: "16px",
                 background: t.accentSoft,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "22px",
+                fontSize: "26px",
+                flexShrink: 0,
               }}
             >
               {user?.avatar || "👤"}
             </div>
 
             <div>
-              <p style={{ fontSize: "16px", fontWeight: 700, color: t.text }}>
+              <p style={{ fontSize: "16px", fontWeight: 800, color: t.text, marginBottom: "4px" }}>
                 {user?.name || "Sem nome"}
               </p>
               <p style={{ fontSize: "13px", color: t.textSub }}>
@@ -115,7 +123,7 @@ export default function Settings({
           </div>
 
           <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "10px" }}>
-            Trocar avatar
+            Escolha um novo avatar
           </p>
 
           <div
@@ -138,7 +146,7 @@ export default function Settings({
                   background: selectedAvatar === avatar ? t.accentSoft : avatarTile,
                   color: t.text,
                   borderRadius: "12px",
-                  height: "44px",
+                  height: "46px",
                   cursor: "pointer",
                   fontSize: "22px",
                 }}
@@ -171,6 +179,7 @@ export default function Settings({
             marginBottom: "14px",
             background: t.bgCard,
             border: `1px solid ${t.border}`,
+            boxShadow: t.shadowCard,
           }}
         >
           <p
@@ -179,15 +188,29 @@ export default function Settings({
               color: t.textMuted,
               fontWeight: 800,
               textTransform: "uppercase",
-              marginBottom: "10px",
+              letterSpacing: "0.5px",
+              marginBottom: "12px",
             }}
           >
-            Receita mensal
+            Finanças
           </p>
 
-          <p style={{ fontSize: "14px", color: t.textSub, marginBottom: "10px" }}>
-            Valor atual: <strong style={{ color: t.text }}>{formatBRL(d?.salary || 0)}</strong>
-          </p>
+          <div
+            style={{
+              padding: "12px",
+              borderRadius: "16px",
+              background: softTile,
+              border: `1px solid ${t.border}`,
+              marginBottom: "12px",
+            }}
+          >
+            <p style={{ fontSize: "12px", color: t.textMuted, marginBottom: "6px" }}>
+              Receita mensal atual
+            </p>
+            <p style={{ fontSize: "18px", fontWeight: 800, color: t.text }}>
+              {formatBRL(d?.salary || 0)}
+            </p>
+          </div>
 
           <input
             type="number"
@@ -199,7 +222,7 @@ export default function Settings({
               padding: "12px",
               borderRadius: "12px",
               border: `1px solid ${t.border}`,
-              background: softTile,
+              background: softTile2,
               color: t.text,
               marginBottom: "12px",
               fontSize: "14px",
@@ -230,6 +253,7 @@ export default function Settings({
             marginBottom: "14px",
             background: t.bgCard,
             border: `1px solid ${t.border}`,
+            boxShadow: t.shadowCard,
           }}
         >
           <p
@@ -238,31 +262,44 @@ export default function Settings({
               color: t.textMuted,
               fontWeight: 800,
               textTransform: "uppercase",
-              marginBottom: "10px",
+              letterSpacing: "0.5px",
+              marginBottom: "12px",
             }}
           >
-            Resetar dados
+            Ações do perfil
           </p>
 
-          <p style={{ fontSize: "14px", color: t.textSub, lineHeight: 1.5, marginBottom: "12px" }}>
-            Isso vai limpar salário, gastos, dívidas e investimentos deste perfil, mas sem apagar o usuário.
-          </p>
-
-          <button
-            onClick={onResetData}
+          <div
             style={{
-              width: "100%",
+              padding: "14px",
+              borderRadius: "16px",
               background: t.negativeSoft,
-              color: t.negative,
               border: `1px solid ${t.negative}30`,
-              borderRadius: "12px",
-              padding: "12px",
-              fontWeight: 700,
-              cursor: "pointer",
             }}
           >
-            Resetar dados deste perfil
-          </button>
+            <p style={{ fontSize: "14px", color: t.text, fontWeight: 700, marginBottom: "6px" }}>
+              Resetar dados
+            </p>
+            <p style={{ fontSize: "13px", color: t.textSub, lineHeight: 1.5, marginBottom: "12px" }}>
+              Isso vai limpar salário, gastos, dívidas e investimentos deste perfil, mas sem apagar o usuário.
+            </p>
+
+            <button
+              onClick={onResetData}
+              style={{
+                width: "100%",
+                background: "transparent",
+                color: t.negative,
+                border: `1px solid ${t.negative}40`,
+                borderRadius: "12px",
+                padding: "12px",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Resetar dados deste perfil
+            </button>
+          </div>
         </Card>
 
         <Card
@@ -270,6 +307,7 @@ export default function Settings({
             padding: "18px",
             background: t.bgCard,
             border: `1px solid ${t.border}`,
+            boxShadow: t.shadowCard,
           }}
         >
           <p
@@ -278,14 +316,15 @@ export default function Settings({
               color: t.textMuted,
               fontWeight: 800,
               textTransform: "uppercase",
+              letterSpacing: "0.5px",
               marginBottom: "10px",
             }}
           >
             Estado do app
           </p>
 
-          <p style={{ fontSize: "14px", color: t.textSub, lineHeight: 1.5 }}>
-            Base principal funcionando com usuários, dados persistidos, gastos, dívidas e investimentos.
+          <p style={{ fontSize: "14px", color: t.textSub, lineHeight: 1.6 }}>
+            Perfil com avatar, receita, reset de dados, persistência local, alternância de tema e módulos principais ativos.
           </p>
         </Card>
       </div>
