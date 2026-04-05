@@ -80,6 +80,12 @@ function LoginScreen({ onLogin }) {
   const [selectedAvatar, setSelectedAvatar] = useState("🦊");
 
   const existingUsers = users || {};
+  
+  const deleteUser = (id) => {
+    const updatedUsers = { ...existingUsers };
+    delete updatedUsers[id];
+    setUsers(updatedUsers);
+  };
 
   const createUser = () => {
     if (!name.trim()) return;
@@ -170,47 +176,79 @@ function LoginScreen({ onLogin }) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {Object.values(existingUsers).length > 0 ? (
-              Object.values(existingUsers).map((user) => (
-                <button
+              {Object.values(existingUsers).map((user) => (
+                <div
                   key={user.id}
-                  onClick={() => onLogin(user)}
                   style={{
                     border: "1px solid #ececec",
                     background: "#fff",
                     borderRadius: "14px",
                     padding: "12px 14px",
-                    textAlign: "left",
-                    cursor: "pointer",
                     fontSize: "14px",
                     display: "flex",
                     alignItems: "center",
+                    justifyContent: "space-between",
                     gap: "10px",
                     boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+              }}
+            >
+              <button
+                onClick={() => onLogin(user)}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  padding: 0,
+                  margin: 0,
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  flex: 1,
+                  textAlign: "left",
+                }}
+              >
+                <div
+                  style={{
+                    width: "38px",
+                    height: "38px",
+                    borderRadius: "12px",
+                    background: theme.accentSoft,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "20px",
+                    flexShrink: 0,
                   }}
                 >
-                  <div
-                    style={{
-                      width: "38px",
-                      height: "38px",
-                      borderRadius: "12px",
-                      background: theme.accentSoft,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                    }}
-                  >
-                    {user.avatar}
-                  </div>
-
-                  <div>
-                    <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
-                    <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>
-                      Entrar nesse perfil
-                    </p>
-                  </div>
-                </button>
-              ))
+                  {user.avatar}
+                </div>
+                
+                <div>
+                  <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
+                  <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>
+                    Entrar nesse perfil
+                  </p>
+                </div>
+              </button>
+                
+              <button
+                onClick={() => deleteUser(user.id)}
+                style={{
+                  border: "1px solid #f1c7c2",
+                  background: "#fff5f4",
+                  color: "#c0392b",
+                  borderRadius: "10px",
+                  padding: "8px 10px",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  fontSize: "12px",
+                  flexShrink: 0,
+                }}
+              >
+                Excluir
+              </button>
+            </div>
+          ))}
             ) : (
               <div
                 style={{
