@@ -18,6 +18,12 @@ export default function LoginScreen({
     const updatedUsers = { ...existingUsers };
     delete updatedUsers[id];
     setUsers(updatedUsers);
+
+    try {
+      localStorage.removeItem(`finchly_data_${id}`);
+    } catch (error) {
+      console.error("Erro ao remover dados do usuário:", error);
+    }
   };
 
   const createUser = () => {
