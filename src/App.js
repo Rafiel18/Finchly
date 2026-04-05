@@ -4,6 +4,7 @@ import Expenses from "./components/Expenses";
 import Debts from "./components/Debts";
 import Investments from "./components/Investments";
 import Settings from "./components/Settings";
+import LoginScreen from "./components/LoginScreen";
 import { ThemeContext } from "./context/theme";
 import { defaultData } from "./utils/finance";
 import { daysInMonth, dayOfMonth } from "./utils/date";
