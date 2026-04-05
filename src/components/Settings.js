@@ -285,20 +285,28 @@ export default function Settings({
             </p>
 
             <button
-              onClick={onResetData}
-              style={{
-                width: "100%",
-                background: "transparent",
-                color: t.negative,
-                border: `1px solid ${t.negative}40`,
-                borderRadius: "12px",
-                padding: "12px",
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              Resetar dados deste perfil
-            </button>
+  onClick={() => {
+    const confirmed = window.confirm(
+      "Tem certeza que deseja resetar os dados deste perfil? Essa ação vai limpar salário, gastos, dívidas e investimentos."
+    );
+
+    if (confirmed && onResetData) {
+      onResetData();
+    }
+  }}
+  style={{
+    width: "100%",
+    background: "transparent",
+    color: t.negative,
+    border: `1px solid ${t.negative}40`,
+    borderRadius: "12px",
+    padding: "12px",
+    fontWeight: 700,
+    cursor: "pointer",
+  }}
+>
+  Resetar dados deste perfil
+</button>
           </div>
         </Card>
 
