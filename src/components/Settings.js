@@ -8,6 +8,9 @@ export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) 
   const [salaryInput, setSalaryInput] = useState(String(d?.salary || ""));
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || "🦊");
 
+  const avatarTile = t.avatarTile || t.bgCard;
+  const softTile = t.softTile || t.bgInput;
+
   const handleSaveSalary = () => {
     const salary = Number(salaryInput);
     if (isNaN(salary) || salary < 0) return;
@@ -71,7 +74,14 @@ export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) 
             Usuário
           </p>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginBottom: "14px",
+            }}
+          >
             <div
               style={{
                 width: "46px",
@@ -118,7 +128,8 @@ export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) 
                     selectedAvatar === avatar
                       ? `2px solid ${t.accent}`
                       : `1px solid ${t.border}`,
-                  background: selectedAvatar === avatar ? t.accentSoft : "#fff",
+                  background: selectedAvatar === avatar ? t.accentSoft : avatarTile,
+                  color: t.text,
                   borderRadius: "12px",
                   height: "44px",
                   cursor: "pointer",
@@ -181,7 +192,7 @@ export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) 
               padding: "12px",
               borderRadius: "12px",
               border: `1px solid ${t.border}`,
-              background: t.bgInput,
+              background: softTile,
               color: t.text,
               marginBottom: "12px",
               fontSize: "14px",
