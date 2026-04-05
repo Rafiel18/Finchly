@@ -15,16 +15,22 @@ export default function LoginScreen({
   const existingUsers = users || {};
 
   const deleteUser = (id) => {
-    const updatedUsers = { ...existingUsers };
-    delete updatedUsers[id];
-    setUsers(updatedUsers);
+  const confirmed = window.confirm(
+    "Tem certeza que deseja excluir este perfil? Os dados salvos desse usuário também serão apagados."
+  );
 
-    try {
-      localStorage.removeItem(`finchly_data_${id}`);
-    } catch (error) {
-      console.error("Erro ao remover dados do usuário:", error);
-    }
-  };
+  if (!confirmed) return;
+
+  const updatedUsers = { ...existingUsers };
+  delete updatedUsers[id];
+  setUsers(updatedUsers);
+
+  try {
+    localStorage.removeItem(`finchly_data_${id}`);
+  } catch (error) {
+    console.error("Erro ao remover dados do usuário:", error);
+  }
+};
 
   const createUser = () => {
     if (!name.trim()) return;
