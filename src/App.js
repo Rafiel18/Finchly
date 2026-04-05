@@ -9,48 +9,9 @@ import Settings from "./components/Settings";
 import { ThemeContext } from "./context/theme";
 import { useStorage } from "./hooks/useStorage";
 import { LIGHT_THEME, DARK_THEME } from "./theme/themes";
+import { TABS, AVATARS } from "./config/appConfig";
 import { daysInMonth, dayOfMonth } from "./utils/date";
-import { defaultData } from "./utils/finance";
-
-const AVATARS = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
-
-const TABS = [
-  { id: "dashboard", label: "Início", icon: "🏠" },
-  { id: "expenses", label: "Gastos", icon: "💳" },
-  { id: "debts", label: "Dívidas", icon: "📋" },
-  { id: "invest", label: "Invest.", icon: "🌱" },
-  { id: "settings", label: "Config", icon: "⚙️" },
-];
-
-function createInitialData() {
-  const base = defaultData();
-
-  return {
-    ...base,
-    salary: 2500,
-    expenses: [
-      { id: 1, description: "Mercado", category: "Casa", date: "04/04/2026", amount: 250 },
-      { id: 2, description: "Gasolina", category: "Transporte", date: "04/04/2026", amount: 180 },
-      { id: 3, description: "Lanche", category: "Alimentação", date: "04/04/2026", amount: 35 },
-    ],
-    investments: [
-      { id: 1, principal: 500 },
-      { id: 2, principal: 300 },
-    ],
-    debts: [
-      {
-        id: 1,
-        description: "Cartão Nubank",
-        creditor: "Nubank",
-        totalAmount: 1200,
-        installmentValue: 200,
-        totalInstallments: 6,
-        remainingInstallments: 4,
-        dueDay: 10,
-      },
-    ],
-  };
-}
+import { createInitialData } from "./utils/createInitialData";
 
 function MainApp({ user, onLogout, onUpdateUser, themeMode, toggleTheme, theme }) {
   const [tab, setTab] = useState("dashboard");
