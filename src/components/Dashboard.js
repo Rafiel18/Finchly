@@ -36,6 +36,10 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
   const topCategoryValue = topCategoryEntry ? topCategoryEntry[1] : 0;
   const topCategoryPercent = totalExp > 0 ? (topCategoryValue / totalExp) * 100 : 0;
 
+  const glassCard = t.glassCard || "rgba(255,255,255,0.72)";
+  const softTile = t.softTile || t.bgInput;
+  const softTile2 = t.softTile2 || t.bgCard;
+
   let status;
   if (salary <= 0) {
     status = {
@@ -160,10 +164,12 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                 display: "inline-flex",
                 alignItems: "center",
                 gap: "10px",
-                background: "rgba(255,255,255,0.58)",
+                background: glassCard,
                 border: `1px solid ${t.border}`,
                 borderRadius: "999px",
                 padding: "10px 14px",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
               }}
             >
               <span style={{ fontSize: "20px" }}>{status.icon}</span>
@@ -234,7 +240,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
             <div
               style={{
-                background: "rgba(255,255,255,0.55)",
+                background: glassCard,
                 borderRadius: "999px",
                 height: "10px",
                 overflow: "hidden",
@@ -265,10 +271,12 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
           >
             <div
               style={{
-                background: "rgba(255,255,255,0.72)",
+                background: glassCard,
                 border: `1px solid ${t.border}`,
                 borderRadius: "18px",
                 padding: "14px",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
               }}
             >
               <p
@@ -296,10 +304,12 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
             <div
               style={{
-                background: "rgba(255,255,255,0.72)",
+                background: glassCard,
                 border: `1px solid ${t.border}`,
                 borderRadius: "18px",
                 padding: "14px",
+                backdropFilter: "blur(10px)",
+                WebkitBackdropFilter: "blur(10px)",
               }}
             >
               <p
@@ -347,7 +357,14 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             },
             { label: "Investido", value: totalInv, color: t.accentBlue, soft: t.accentBlueSoft, icon: "🌱" },
           ].map((c) => (
-            <Card key={c.label} style={{ padding: "16px", background: t.bgCard, border: `1px solid ${t.border}` }}>
+            <Card
+              key={c.label}
+              style={{
+                padding: "16px",
+                background: t.bgCard,
+                border: `1px solid ${t.border}`,
+              }}
+            >
               <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
                 <div
                   style={{
@@ -422,12 +439,13 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
             <div
               style={{
-                background: t.accentSoft,
+                background: softTile,
                 color: t.accent,
                 borderRadius: "12px",
                 padding: "10px 12px",
                 minWidth: "88px",
                 textAlign: "center",
+                border: `1px solid ${t.border}`,
               }}
             >
               <p style={{ fontSize: "10px", fontWeight: 800, textTransform: "uppercase" }}>
@@ -470,7 +488,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
                   alignItems: "flex-start",
                   padding: "10px 12px",
                   borderRadius: "14px",
-                  background: t.bgInput,
+                  background: softTile,
                   border: `1px solid ${t.border}`,
                 }}
               >
@@ -605,7 +623,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
             style={{
               padding: "16px",
               marginTop: "12px",
-              background: t.accentSoft,
+              background: softTile2,
               border: `1px solid ${t.accent}30`,
             }}
           >
@@ -638,7 +656,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
           <div
             style={{
-              background: t.bgInput,
+              background: softTile,
               borderRadius: "999px",
               overflow: "hidden",
               height: "8px",
@@ -666,7 +684,7 @@ export default function Dashboard({ d, salary, balance, daily, totalExp, remDays
 
           <div
             style={{
-              background: t.bgInput,
+              background: softTile,
               borderRadius: "999px",
               overflow: "hidden",
               height: "8px",
