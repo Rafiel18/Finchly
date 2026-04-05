@@ -32,6 +32,11 @@ export default function MainApp({
     });
   };
 
+  const handleResetData = () => {
+    const fresh = createInitialData();
+    setDados(fresh);
+  };
+
   const salary = Number(d.salary) || 0;
   const totalExp = d.expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
   const balance = salary - totalExp;
@@ -90,6 +95,7 @@ export default function MainApp({
             user={user}
             onUpdateUser={onUpdateUser}
             avatars={AVATARS}
+            onResetData={handleResetData}
           />
         )}
       </div>
