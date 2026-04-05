@@ -74,13 +74,12 @@ function createInitialData() {
   };
 }
 
-function LoginScreen({ onLogin }) {
-  const [users, setUsers] = useStorage("finchly_users");
+function LoginScreen({ onLogin, users, setUsers }) {
   const [name, setName] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState("🦊");
 
   const existingUsers = users || {};
-  
+
   const deleteUser = (id) => {
     const updatedUsers = { ...existingUsers };
     delete updatedUsers[id];
@@ -176,93 +175,93 @@ function LoginScreen({ onLogin }) {
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             {Object.values(existingUsers).length > 0 ? (
-  Object.values(existingUsers).map((user) => (
-    <div
-      key={user.id}
-      style={{
-        border: "1px solid #ececec",
-        background: "#fff",
-        borderRadius: "14px",
-        padding: "12px 14px",
-        fontSize: "14px",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "10px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
-      }}
-    >
-      <button
-        onClick={() => onLogin(user)}
-        style={{
-          border: "none",
-          background: "transparent",
-          padding: 0,
-          margin: 0,
-          cursor: "pointer",
-          display: "flex",
-          alignItems: "center",
-          gap: "10px",
-          flex: 1,
-          textAlign: "left",
-        }}
-      >
-        <div
-          style={{
-            width: "38px",
-            height: "38px",
-            borderRadius: "12px",
-            background: theme.accentSoft,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            fontSize: "20px",
-            flexShrink: 0,
-          }}
-        >
-          {user.avatar}
-        </div>
+              Object.values(existingUsers).map((user) => (
+                <div
+                  key={user.id}
+                  style={{
+                    border: "1px solid #ececec",
+                    background: "#fff",
+                    borderRadius: "14px",
+                    padding: "12px 14px",
+                    fontSize: "14px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: "10px",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+                  }}
+                >
+                  <button
+                    onClick={() => onLogin(user)}
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      padding: 0,
+                      margin: 0,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "10px",
+                      flex: 1,
+                      textAlign: "left",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: "38px",
+                        height: "38px",
+                        borderRadius: "12px",
+                        background: theme.accentSoft,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontSize: "20px",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {user.avatar}
+                    </div>
 
-        <div>
-          <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
-          <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>
-            Entrar nesse perfil
-          </p>
-        </div>
-      </button>
+                    <div>
+                      <p style={{ margin: 0, color: "#1f2937", fontWeight: 700 }}>{user.name}</p>
+                      <p style={{ margin: 0, color: "#6b7280", fontSize: "12px" }}>
+                        Entrar nesse perfil
+                      </p>
+                    </div>
+                  </button>
 
-      <button
-        onClick={() => deleteUser(user.id)}
-        style={{
-          border: "1px solid #f1c7c2",
-          background: "#fff5f4",
-          color: "#c0392b",
-          borderRadius: "10px",
-          padding: "8px 10px",
-          cursor: "pointer",
-          fontWeight: 700,
-          fontSize: "12px",
-          flexShrink: 0,
-        }}
-      >
-        Excluir
-      </button>
-    </div>
-  ))
-) : (
-  <div
-    style={{
-      border: "1px dashed #d1d5db",
-      borderRadius: "14px",
-      padding: "14px",
-      textAlign: "center",
-      color: "#6b7280",
-      fontSize: "13px",
-    }}
-  >
-    Nenhum perfil criado ainda.
-  </div>
-)}
+                  <button
+                    onClick={() => deleteUser(user.id)}
+                    style={{
+                      border: "1px solid #f1c7c2",
+                      background: "#fff5f4",
+                      color: "#c0392b",
+                      borderRadius: "10px",
+                      padding: "8px 10px",
+                      cursor: "pointer",
+                      fontWeight: 700,
+                      fontSize: "12px",
+                      flexShrink: 0,
+                    }}
+                  >
+                    Excluir
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div
+                style={{
+                  border: "1px dashed #d1d5db",
+                  borderRadius: "14px",
+                  padding: "14px",
+                  textAlign: "center",
+                  color: "#6b7280",
+                  fontSize: "13px",
+                }}
+              >
+                Nenhum perfil criado ainda.
+              </div>
+            )}
           </div>
         </div>
 
@@ -357,7 +356,7 @@ function LoginScreen({ onLogin }) {
   );
 }
 
-function MainApp({ user, onLogout }) {
+function MainApp({ user, onLogout, onUpdateUser }) {
   const [tab, setTab] = useState("dashboard");
   const [dados, setDados] = useStorage(`finchly_data_${user.id}`);
 
@@ -482,7 +481,15 @@ function MainApp({ user, onLogout }) {
         {tab === "expenses" && <Expenses d={d} save={save} />}
         {tab === "debts" && <Debts d={d} save={save} />}
         {tab === "invest" && <Investments d={d} save={save} />}
-        {tab === "settings" && <Settings d={d} save={save} user={user} />}
+        {tab === "settings" && (
+          <Settings
+            d={d}
+            save={save}
+            user={user}
+            onUpdateUser={onUpdateUser}
+            avatars={avatars}
+          />
+        )}
       </div>
 
       <div
@@ -553,14 +560,40 @@ function MainApp({ user, onLogout }) {
 }
 
 export default function App() {
+  const [users, setUsers] = useStorage("finchly_users");
   const [currentUser, setCurrentUser] = useState(null);
+
+  const handleUpdateUser = (patch) => {
+    if (!currentUser) return;
+
+    const updatedUser = {
+      ...currentUser,
+      ...patch,
+    };
+
+    setCurrentUser(updatedUser);
+
+    const currentUsers = users || {};
+    setUsers({
+      ...currentUsers,
+      [updatedUser.id]: updatedUser,
+    });
+  };
 
   return (
     <ThemeContext.Provider value={theme}>
       {currentUser ? (
-        <MainApp user={currentUser} onLogout={() => setCurrentUser(null)} />
+        <MainApp
+          user={currentUser}
+          onLogout={() => setCurrentUser(null)}
+          onUpdateUser={handleUpdateUser}
+        />
       ) : (
-        <LoginScreen onLogin={setCurrentUser} />
+        <LoginScreen
+          onLogin={setCurrentUser}
+          users={users}
+          setUsers={setUsers}
+        />
       )}
     </ThemeContext.Provider>
   );
