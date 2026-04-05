@@ -316,13 +316,14 @@ export default function App() {
         />
       ) : (
         <LoginScreen
-          onLogin={setCurrentUser}
-          users={users}
-          setUsers={setUsers}
-          themeMode={resolvedThemeMode}
-          toggleTheme={toggleTheme}
-          theme={theme}
-        />
+  onLogin={setCurrentUser}
+  users={users}
+  setUsers={setUsers}
+  themeMode={resolvedThemeMode}
+  toggleTheme={toggleTheme}
+  theme={theme}
+  avatars={avatars}
+/>
       )}
     </ThemeContext.Provider>
   );
