@@ -1,18 +1,86 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
 export default function Debts({ d, save }) {
   const t = useTheme();
+
+  const [form, setForm] = useState({
+    description: "",
+    creditor: "",
+    installmentValue: "",
+    totalInstallments: "",
+    remainingInstallments: "",
+    dueDay: "",
+  });
+
   const [editId, setEditId] = useState(null);
   const [editVal, setEditVal] = useState("");
 
   const debts = Array.isArray(d?.debts) ? d.debts : [];
 
-  const totalPending = debts.reduce((sum, dbt) => {
-    return sum + Number(dbt.installmentValue || 0) * Number(dbt.remainingInstallments || 0);
-  }, 0);
+  const totalPending = useMemo(() => {
+    return debts.reduce((sum, dbt) => {
+      return sum + Number(dbt.installmentValue || 0) * Number(dbt.remainingInstallments || 0);
+    }, 0);
+  }, [debts]);
+
+  const updateForm = (field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      description: "",
+      creditor: "",
+      installmentValue: "",
+      totalInstallments: "",
+      remainingInstallments: "",
+      dueDay: "",
+    });
+  };
+
+  const addDebt = () => {
+    const description = form.description.trim();
+    const creditor = form.creditor.trim();
+    const installmentValue = Number(form.installmentValue);
+    const totalInstallments = Number(form.totalInstallments);
+    const remainingInstallments = Number(form.remainingInstallments);
+    const dueDay = Number(form.dueDay);
+
+    if (!description) return;
+    if (!installmentValue || installmentValue <= 0) return;
+    if (!totalInstallments || totalInstallments <= 0) return;
+    if (
+      Number.isNaN(remainingInstallments) ||
+      remainingInstallments < 0 ||
+      remainingInstallments > totalInstallments
+    ) {
+      return;
+    }
+    if (Number.isNaN(dueDay) || dueDay < 1 || dueDay > 31) return;
+
+    const newDebt = {
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      description,
+      creditor,
+      installmentValue,
+      totalInstallments,
+      remainingInstallments,
+      dueDay,
+      createdAt: new Date().toISOString(),
+    };
+
+    save({
+      debts: [newDebt, ...debts],
+    });
+
+    resetForm();
+  };
 
   const removeDebt = (id) => {
     save({
@@ -22,12 +90,15 @@ export default function Debts({ d, save }) {
 
   const saveRemaining = (id) => {
     const value = Number(editVal);
-    if (isNaN(value) || value < 0) return;
+    if (Number.isNaN(value) || value < 0) return;
 
     save({
       debts: debts.map((dbt) =>
         dbt.id === id
-          ? { ...dbt, remainingInstallments: value }
+          ? {
+              ...dbt,
+              remainingInstallments: Math.min(value, Number(dbt.totalInstallments || 0)),
+            }
           : dbt
       ),
     });
@@ -39,9 +110,7 @@ export default function Debts({ d, save }) {
   return (
     <div
       style={{
-        minHeight: "100vh",
-        background: t.bg,
-        padding: "24px 16px 40px",
+        padding: "4px 0 8px",
         fontFamily: "Arial, sans-serif",
       }}
     >
@@ -57,6 +126,7 @@ export default function Debts({ d, save }) {
           >
             Dívidas
           </h2>
+
           <p style={{ color: t.textSub, fontSize: "14px" }}>
             Controle das parcelas e saldo restante
           </p>
@@ -91,6 +161,103 @@ export default function Debts({ d, save }) {
           >
             {formatBRL(totalPending)}
           </p>
+        </Card>
+
+        <Card
+          style={{
+            padding: "16px",
+            marginBottom: "14px",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "20px",
+              fontWeight: 800,
+              color: t.text,
+              marginBottom: "14px",
+            }}
+          >
+            Nova dívida
+          </h3>
+
+          <div style={{ display: "grid", gap: "12px" }}>
+            <input
+              type="text"
+              value={form.description}
+              onChange={(e) => updateForm("description", e.target.value)}
+              placeholder="Descrição"
+              style={inputStyle(t)}
+            />
+
+            <input
+              type="text"
+              value={form.creditor}
+              onChange={(e) => updateForm("creditor", e.target.value)}
+              placeholder="Credor ou loja"
+              style={inputStyle(t)}
+            />
+
+            <input
+              type="number"
+              value={form.installmentValue}
+              onChange={(e) => updateForm("installmentValue", e.target.value)}
+              placeholder="Valor da parcela (R$)"
+              style={inputStyle(t)}
+            />
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "12px",
+              }}
+            >
+              <input
+                type="number"
+                value={form.totalInstallments}
+                onChange={(e) => updateForm("totalInstallments", e.target.value)}
+                placeholder="Total de parcelas"
+                style={inputStyle(t)}
+              />
+
+              <input
+                type="number"
+                value={form.remainingInstallments}
+                onChange={(e) => updateForm("remainingInstallments", e.target.value)}
+                placeholder="Restantes"
+                style={inputStyle(t)}
+              />
+            </div>
+
+            <input
+              type="number"
+              value={form.dueDay}
+              onChange={(e) => updateForm("dueDay", e.target.value)}
+              placeholder="Dia do vencimento"
+              min="1"
+              max="31"
+              style={inputStyle(t)}
+            />
+
+            <button
+              onClick={addDebt}
+              style={{
+                width: "100%",
+                background: t.accent,
+                color: "#fff",
+                border: "none",
+                borderRadius: "14px",
+                padding: "14px",
+                cursor: "pointer",
+                fontWeight: 800,
+                fontSize: "15px",
+              }}
+            >
+              Adicionar dívida
+            </button>
+          </div>
         </Card>
 
         {debts.length === 0 ? (
@@ -289,4 +456,18 @@ export default function Debts({ d, save }) {
       </div>
     </div>
   );
+}
+
+function inputStyle(t) {
+  return {
+    width: "100%",
+    padding: "14px 16px",
+    borderRadius: "14px",
+    border: `1px solid ${t.border}`,
+    background: t.bgInput,
+    color: t.text,
+    fontSize: "15px",
+    outline: "none",
+    boxSizing: "border-box",
+  };
 }
