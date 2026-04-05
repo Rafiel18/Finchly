@@ -47,7 +47,10 @@ export default function MainApp({
       <div
         style={{
           flex: 1,
-          padding: "18px 16px 120px",
+          paddingTop: "18px",
+          paddingRight: "16px",
+          paddingLeft: "16px",
+          paddingBottom: "160px",
           maxWidth: "720px",
           width: "100%",
           margin: "0 auto",
