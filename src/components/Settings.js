@@ -3,9 +3,10 @@ import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Settings({ d, save, user }) {
+export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) {
   const t = useTheme();
   const [salaryInput, setSalaryInput] = useState(String(d?.salary || ""));
+  const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || "🦊");
 
   const handleSaveSalary = () => {
     const salary = Number(salaryInput);
@@ -13,6 +14,14 @@ export default function Settings({ d, save, user }) {
 
     save({
       salary,
+    });
+  };
+
+  const handleSaveAvatar = () => {
+    if (!onUpdateUser) return;
+
+    onUpdateUser({
+      avatar: selectedAvatar,
     });
   };
 
@@ -62,7 +71,7 @@ export default function Settings({ d, save, user }) {
             Usuário
           </p>
 
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
             <div
               style={{
                 width: "46px",
@@ -87,6 +96,55 @@ export default function Settings({ d, save, user }) {
               </p>
             </div>
           </div>
+
+          <p style={{ fontSize: "13px", color: t.textSub, marginBottom: "10px" }}>
+            Trocar avatar
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(5, 1fr)",
+              gap: "8px",
+              marginBottom: "12px",
+            }}
+          >
+            {avatars.map((avatar) => (
+              <button
+                key={avatar}
+                onClick={() => setSelectedAvatar(avatar)}
+                style={{
+                  border:
+                    selectedAvatar === avatar
+                      ? `2px solid ${t.accent}`
+                      : `1px solid ${t.border}`,
+                  background: selectedAvatar === avatar ? t.accentSoft : "#fff",
+                  borderRadius: "12px",
+                  height: "44px",
+                  cursor: "pointer",
+                  fontSize: "22px",
+                }}
+              >
+                {avatar}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleSaveAvatar}
+            style={{
+              width: "100%",
+              background: t.accentSoft,
+              color: t.accent,
+              border: `1px solid ${t.accent}30`,
+              borderRadius: "12px",
+              padding: "12px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Salvar avatar
+          </button>
         </Card>
 
         <Card
@@ -127,6 +185,7 @@ export default function Settings({ d, save, user }) {
               color: t.text,
               marginBottom: "12px",
               fontSize: "14px",
+              boxSizing: "border-box",
             }}
           />
 
