@@ -7,10 +7,9 @@ import Settings from "./Settings";
 import TopBar from "./layout/TopBar";
 import BottomNav from "./layout/BottomNav";
 
-import { useStorage } from "../hooks/useStorage";
 import { TABS, AVATARS } from "../config/appConfig";
-import { daysInMonth, dayOfMonth } from "../utils/date";
-import { createInitialData } from "../utils/createInitialData";
+import { useUserData } from "../hooks/useUserData";
+import { getDashboardSummary } from "../utils/dashboardSummary";
 
 export default function MainApp({
   user,
@@ -21,27 +20,9 @@ export default function MainApp({
   theme,
 }) {
   const [tab, setTab] = useState("dashboard");
-  const [dados, setDados] = useStorage(`finchly_data_${user.id}`);
+  const { data: d, save, reset } = useUserData(user.id);
 
-  const d = dados || createInitialData();
-
-  const save = (patch) => {
-    setDados({
-      ...d,
-      ...patch,
-    });
-  };
-
-  const handleResetData = () => {
-    const fresh = createInitialData();
-    setDados(fresh);
-  };
-
-  const salary = Number(d.salary) || 0;
-  const totalExp = d.expenses.reduce((sum, expense) => sum + Number(expense.amount || 0), 0);
-  const balance = salary - totalExp;
-  const remDays = daysInMonth() - dayOfMonth() + 1;
-  const daily = remDays > 0 ? balance / remDays : 0;
+  const { salary, totalExp, balance, remDays, daily } = getDashboardSummary(d);
 
   return (
     <div
@@ -95,7 +76,7 @@ export default function MainApp({
             user={user}
             onUpdateUser={onUpdateUser}
             avatars={AVATARS}
-            onResetData={handleResetData}
+            onResetData={reset}
           />
         )}
       </div>
