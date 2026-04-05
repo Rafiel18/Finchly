@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
-import Expenses from "./components/Expenses";
 import Debts from "./components/Debts";
+import Expenses from "./components/Expenses";
 import Investments from "./components/Investments";
-import Settings from "./components/Settings";
 import LoginScreen from "./components/LoginScreen";
+import Settings from "./components/Settings";
+
 import { ThemeContext } from "./context/theme";
-import { LIGHT_THEME, DARK_THEME } from "./theme/themes";
-import { defaultData } from "./utils/finance";
-import { daysInMonth, dayOfMonth } from "./utils/date";
 import { useStorage } from "./hooks/useStorage";
+import { LIGHT_THEME, DARK_THEME } from "./theme/themes";
+import { daysInMonth, dayOfMonth } from "./utils/date";
+import { defaultData } from "./utils/finance";
 
+const AVATARS = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
 
-const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
-
-const tabs = [
+const TABS = [
   { id: "dashboard", label: "Início", icon: "🏠" },
   { id: "expenses", label: "Gastos", icon: "💳" },
   { id: "debts", label: "Dívidas", icon: "📋" },
@@ -51,7 +51,6 @@ function createInitialData() {
     ],
   };
 }
-
 
 function MainApp({ user, onLogout, onUpdateUser, themeMode, toggleTheme, theme }) {
   const [tab, setTab] = useState("dashboard");
@@ -202,7 +201,7 @@ function MainApp({ user, onLogout, onUpdateUser, themeMode, toggleTheme, theme }
             save={save}
             user={user}
             onUpdateUser={onUpdateUser}
-            avatars={avatars}
+            avatars={AVATARS}
           />
         )}
       </div>
@@ -227,7 +226,7 @@ function MainApp({ user, onLogout, onUpdateUser, themeMode, toggleTheme, theme }
           boxSizing: "border-box",
         }}
       >
-        {tabs.map((item) => {
+        {TABS.map((item) => {
           const active = tab === item.id;
 
           return (
@@ -316,14 +315,14 @@ export default function App() {
         />
       ) : (
         <LoginScreen
-  onLogin={setCurrentUser}
-  users={users}
-  setUsers={setUsers}
-  themeMode={resolvedThemeMode}
-  toggleTheme={toggleTheme}
-  theme={theme}
-  avatars={avatars}
-/>
+          onLogin={setCurrentUser}
+          users={users}
+          setUsers={setUsers}
+          themeMode={resolvedThemeMode}
+          toggleTheme={toggleTheme}
+          theme={theme}
+          avatars={AVATARS}
+        />
       )}
     </ThemeContext.Provider>
   );
