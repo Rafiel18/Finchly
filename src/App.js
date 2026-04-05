@@ -6,73 +6,11 @@ import Investments from "./components/Investments";
 import Settings from "./components/Settings";
 import LoginScreen from "./components/LoginScreen";
 import { ThemeContext } from "./context/theme";
+import { LIGHT_THEME, DARK_THEME } from "./theme/themes";
 import { defaultData } from "./utils/finance";
 import { daysInMonth, dayOfMonth } from "./utils/date";
 import { useStorage } from "./hooks/useStorage";
 
-const LIGHT_THEME = {
-  bg: "#f5f7f2",
-  bgCard: "#ffffff",
-  bgInput: "#f0f4ee",
-  border: "#ececec",
-  text: "#1f2937",
-  textSub: "#6b7280",
-  textMuted: "#9ca3af",
-  accent: "#3d8c5f",
-  accentSoft: "#eaf4ee",
-  accentBlue: "#3b7dd8",
-  accentBlueSoft: "#ebf2fc",
-  positive: "#2e7d52",
-  positiveSoft: "#e6f4ed",
-  warning: "#c45a1a",
-  warningSoft: "#fef0e6",
-  negative: "#c0392b",
-  negativeSoft: "#fdecea",
-  heroGrad: "linear-gradient(135deg, #d6efe1 0%, #e8f4f8 100%)",
-  heroBorder: "rgba(61,140,95,0.2)",
-  heroText: "#2e7d52",
-  shadow: "0 4px 14px rgba(0,0,0,0.06)",
-  shadowCard: "0 4px 12px rgba(0,0,0,0.06)",
-  topBarBg: "rgba(255,255,255,0.88)",
-  navBg: "rgba(255,255,255,0.92)",
-  buttonBg: "#ffffff",
-  glassCard: "rgba(255,255,255,0.72)",
-  softTile: "#f0f4ee",
-  softTile2: "#ffffff",
-  avatarTile: "#ffffff",
-};
-
-const DARK_THEME = {
-  bg: "#0f1412",
-  bgCard: "#171d1a",
-  bgInput: "#1d2521",
-  border: "#28312c",
-  text: "#eef4f0",
-  textSub: "#b6c5bb",
-  textMuted: "#7d8d83",
-  accent: "#57b97d",
-  accentSoft: "#1a2a22",
-  accentBlue: "#5f99e8",
-  accentBlueSoft: "#182433",
-  positive: "#61c48b",
-  positiveSoft: "#1b2b22",
-  warning: "#f0a24f",
-  warningSoft: "#33261a",
-  negative: "#ea6b60",
-  negativeSoft: "#331d1b",
-  heroGrad: "linear-gradient(135deg, #183225 0%, #162734 100%)",
-  heroBorder: "rgba(87,185,125,0.18)",
-  heroText: "#7fd8a1",
-  shadow: "0 4px 18px rgba(0,0,0,0.24)",
-  shadowCard: "0 4px 12px rgba(0,0,0,0.22)",
-  topBarBg: "rgba(23,29,26,0.88)",
-  navBg: "rgba(23,29,26,0.92)",
-  buttonBg: "#1b221f",
-  glassCard: "rgba(255,255,255,0.04)",
-  softTile: "#202925",
-  softTile2: "#1b2320",
-  avatarTile: "#202925",
-};
 
 const avatars = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
 
