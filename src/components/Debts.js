@@ -321,7 +321,8 @@ export default function Debts({ d, save }) {
                       color: t.negative,
                       border: `1px solid ${t.negative}30`,
                       borderRadius: "10px",
-                      padding: "8px 10px",
+                      padding: "10px 12px",
+                      whiteSpace: "nowrap",
                       cursor: "pointer",
                       fontWeight: 700,
                     }}
@@ -376,56 +377,69 @@ export default function Debts({ d, save }) {
                 </p>
 
                 {editId === dbt.id ? (
-                  <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
-                    <input
-                      type="number"
-                      value={editVal}
-                      onChange={(e) => setEditVal(e.target.value)}
-                      placeholder="Parcelas restantes"
-                      style={{
-                        flex: 1,
-                        padding: "12px",
-                        borderRadius: "12px",
-                        border: `1px solid ${t.border}`,
-                        background: t.bgInput,
-                        color: t.text,
-                        fontSize: "14px",
-                      }}
-                    />
+                  <div
+  style={{
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "10px",
+    marginTop: "10px",
+  }}
+>
+  <input
+    type="number"
+    value={editVal}
+    onChange={(e) => setEditVal(e.target.value)}
+    placeholder="Parcelas restantes"
+    style={{
+      width: "100%",
+      minWidth: 0,
+      padding: "12px",
+      borderRadius: "12px",
+      border: `1px solid ${t.border}`,
+      background: t.bgInput,
+      color: t.text,
+      fontSize: "14px",
+      boxSizing: "border-box",
+    }}
+  />
 
-                    <button
-                      onClick={() => saveRemaining(dbt.id)}
-                      style={{
-                        background: t.accent,
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: "12px",
-                        padding: "12px 14px",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                      }}
-                    >
-                      Salvar
-                    </button>
+  <button
+    onClick={() => saveRemaining(dbt.id)}
+    style={{
+      flex: "1 1 140px",
+      minWidth: "120px",
+      background: t.accent,
+      color: "#fff",
+      border: "none",
+      borderRadius: "12px",
+      padding: "12px 14px",
+      cursor: "pointer",
+      fontWeight: 700,
+    }}
+  >
+    Salvar
+  </button>
 
-                    <button
-                      onClick={() => {
-                        setEditId(null);
-                        setEditVal("");
-                      }}
-                      style={{
-                        background: "#fff",
-                        color: t.textSub,
-                        border: `1px solid ${t.border}`,
-                        borderRadius: "12px",
-                        padding: "12px 14px",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                      }}
-                    >
-                      Cancelar
-                    </button>
-                  </div>
+  <button
+    onClick={() => {
+      setEditId(null);
+      setEditVal("");
+    }}
+    style={{
+      flex: "1 1 140px",
+      minWidth: "120px",
+      background: "#fff",
+      color: t.textSub,
+      border: `1px solid ${t.border}`,
+      borderRadius: "12px",
+      padding: "12px 14px",
+      cursor: "pointer",
+      fontWeight: 700,
+    }}
+  >
+    Cancelar
+  </button>
+</div>
                 ) : (
                   <button
                     onClick={() => {
