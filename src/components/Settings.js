@@ -3,7 +3,14 @@ import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) {
+export default function Settings({
+  d,
+  save,
+  user,
+  onUpdateUser,
+  avatars = [],
+  onResetData,
+}) {
   const t = useTheme();
   const [salaryInput, setSalaryInput] = useState(String(d?.salary || ""));
   const [selectedAvatar, setSelectedAvatar] = useState(user?.avatar || "🦊");
@@ -214,6 +221,47 @@ export default function Settings({ d, save, user, onUpdateUser, avatars = [] }) 
             }}
           >
             Salvar receita
+          </button>
+        </Card>
+
+        <Card
+          style={{
+            padding: "18px",
+            marginBottom: "14px",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <p
+            style={{
+              fontSize: "11px",
+              color: t.textMuted,
+              fontWeight: 800,
+              textTransform: "uppercase",
+              marginBottom: "10px",
+            }}
+          >
+            Resetar dados
+          </p>
+
+          <p style={{ fontSize: "14px", color: t.textSub, lineHeight: 1.5, marginBottom: "12px" }}>
+            Isso vai limpar salário, gastos, dívidas e investimentos deste perfil, mas sem apagar o usuário.
+          </p>
+
+          <button
+            onClick={onResetData}
+            style={{
+              width: "100%",
+              background: t.negativeSoft,
+              color: t.negative,
+              border: `1px solid ${t.negative}30`,
+              borderRadius: "12px",
+              padding: "12px",
+              fontWeight: 700,
+              cursor: "pointer",
+            }}
+          >
+            Resetar dados deste perfil
           </button>
         </Card>
 
