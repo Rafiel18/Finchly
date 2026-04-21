@@ -1,9 +1,10 @@
 export const AVATARS = ["🦊", "🦁", "🐺", "🐻", "🦅", "🐼", "🐱", "🐶", "🐸", "🐙"];
 
 export const TABS = [
-  { id: "dashboard", label: "Início", icon: "🏠" },
-  { id: "expenses", label: "Gastos", icon: "💳" },
-  { id: "debts", label: "Dívidas", icon: "📋" },
-  { id: "invest", label: "Invest.", icon: "🌱" },
-  { id: "settings", label: "Config", icon: "⚙️" },
+  { key: "dashboard", label: "Início", icon: "🏠" },
+  { key: "expenses", label: "Gastos", icon: "💳" },
+  { key: "debts", label: "Dívidas", icon: "📋" },
+  { key: "invest", label: "Invest.", icon: "🌱" },
+  { key: "simulation", label: "Simular", icon: "🧪" },
+  { key: "settings", label: "Config", icon: "⚙️" },
 ];
