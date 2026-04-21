@@ -67,6 +67,7 @@ export default function MainApp({
           d={d}
           salary={salary}
           remDays={remDays}
+          theme={theme}
         />
       )}
 
