@@ -1,5 +1,4 @@
 import React, { useMemo, useState } from "react";
-import { formatBRL } from "../utils/formatters";
 
 export default function Simulation({ d, salary, remDays, theme }) {
   const [form, setForm] = useState({
@@ -11,6 +10,13 @@ export default function Simulation({ d, salary, remDays, theme }) {
   const [simExpenses, setSimExpenses] = useState([]);
 
   const realExpenses = Array.isArray(d?.expenses) ? d.expenses : [];
+
+  const formatBRL = (value) => {
+    return Number(value || 0).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+  };
 
   const totalRealExpenses = useMemo(() => {
     return realExpenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
@@ -62,7 +68,7 @@ export default function Simulation({ d, salary, remDays, theme }) {
   }
 
   const boxStyle = {
-    background: theme?.card || "#fff",
+    background: theme?.card || "#ffffff",
     border: `1px solid ${theme?.border || "#e5e7eb"}`,
     borderRadius: 24,
     padding: 16,
@@ -72,10 +78,11 @@ export default function Simulation({ d, salary, remDays, theme }) {
     width: "100%",
     borderRadius: 16,
     border: `1px solid ${theme?.border || "#e5e7eb"}`,
-    background: theme?.card || "#fff",
-    color: theme?.text || "#111",
+    background: theme?.card || "#ffffff",
+    color: theme?.text || "#111827",
     padding: "12px 14px",
     outline: "none",
+    boxSizing: "border-box",
   };
 
   const primaryButton = {
@@ -83,7 +90,7 @@ export default function Simulation({ d, salary, remDays, theme }) {
     borderRadius: 16,
     padding: "12px 16px",
     background: theme?.accent || "#111827",
-    color: "#fff",
+    color: "#ffffff",
     fontWeight: 600,
     cursor: "pointer",
   };
@@ -92,7 +99,7 @@ export default function Simulation({ d, salary, remDays, theme }) {
     borderRadius: 16,
     padding: "12px 16px",
     background: "transparent",
-    color: theme?.text || "#111",
+    color: theme?.text || "#111827",
     border: `1px solid ${theme?.border || "#e5e7eb"}`,
     fontWeight: 600,
     cursor: "pointer",
@@ -255,6 +262,7 @@ export default function Simulation({ d, salary, remDays, theme }) {
                 >
                   <strong>{formatBRL(item.amount)}</strong>
                   <button
+                    type="button"
                     onClick={() => handleRemoveSimExpense(item.id)}
                     style={secondaryButton}
                   >
