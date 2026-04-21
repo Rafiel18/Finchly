@@ -4,7 +4,6 @@ import Debts from "./Debts";
 import Expenses from "./Expenses";
 import Investments from "./Investments";
 import Settings from "./Settings";
-import Simulation from "./Simulation";
 import TopBar from "./layout/TopBar";
 import BottomNav from "./layout/BottomNav";
 import AppShell from "./layout/AppShell";
@@ -61,10 +60,6 @@ export default function MainApp({
       {tab === "expenses" && <Expenses d={d} save={save} />}
       {tab === "debts" && <Debts d={d} save={save} />}
       {tab === "invest" && <Investments d={d} save={save} />}
-
-      {tab === "simulation" && (
-        <Simulation d={d} salary={salary} remDays={remDays} />
-      )}
 
       {tab === "settings" && (
         <Settings
