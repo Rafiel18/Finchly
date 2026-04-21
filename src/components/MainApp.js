@@ -4,7 +4,7 @@ import Debts from "./Debts";
 import Expenses from "./Expenses";
 import Investments from "./Investments";
 import Settings from "./Settings";
-import Simulation from "./Simulation";
+import Planejar from "./Planejar";
 import TopBar from "./layout/TopBar";
 import BottomNav from "./layout/BottomNav";
 import AppShell from "./layout/AppShell";
