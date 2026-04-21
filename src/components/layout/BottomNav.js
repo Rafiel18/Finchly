@@ -23,12 +23,12 @@ export default function BottomNav({ tabs, activeTab, onChangeTab, theme }) {
       }}
     >
       {tabs.map((item) => {
-        const active = activeTab === item.id;
+        const active = activeTab === item.key;
 
         return (
           <button
-            key={item.id}
-            onClick={() => onChangeTab(item.id)}
+            key={item.key}
+            onClick={() => onChangeTab(item.key)}
             style={{
               flex: 1,
               border: "none",
