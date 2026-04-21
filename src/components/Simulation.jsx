@@ -1,11 +1,7 @@
 import React, { useMemo, useState } from "react";
-import Card from "./ui/Card";
-import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Simulation({ d, salary, remDays }) {
-  const t = useTheme();
-
+export default function Simulation({ d, salary, remDays, theme }) {
   const [form, setForm] = useState({
     description: "",
     amount: "",
@@ -26,11 +22,13 @@ export default function Simulation({ d, salary, remDays }) {
 
   const totalWithSimulation = totalRealExpenses + totalSimulatedExpenses;
   const simulatedBalance = Number(salary || 0) - totalWithSimulation;
-  const simulatedDaily = remDays > 0 ? simulatedBalance / remDays : simulatedBalance;
+  const simulatedDaily =
+    remDays > 0 ? simulatedBalance / remDays : simulatedBalance;
 
-  const consumedPercent = Number(salary || 0) > 0
-    ? Math.min((totalWithSimulation / Number(salary)) * 100, 999)
-    : 0;
+  const consumedPercent =
+    Number(salary || 0) > 0
+      ? Math.min((totalWithSimulation / Number(salary)) * 100, 999)
+      : 0;
 
   function handleAddSimExpense(e) {
     e.preventDefault();
@@ -63,212 +61,211 @@ export default function Simulation({ d, salary, remDays }) {
     setSimExpenses([]);
   }
 
-  const summaryMessage =
-    simExpenses.length === 0
-      ? "Adicione gastos simulados para ver como eles afetariam seu mês."
-      : simulatedBalance >= 0
-      ? "Simulação saudável: ainda sobraria saldo no mês."
-      : "Atenção: nessa simulação, o mês fecharia no vermelho.";
+  const boxStyle = {
+    background: theme?.card || "#fff",
+    border: `1px solid ${theme?.border || "#e5e7eb"}`,
+    borderRadius: 24,
+    padding: 16,
+  };
+
+  const inputStyle = {
+    width: "100%",
+    borderRadius: 16,
+    border: `1px solid ${theme?.border || "#e5e7eb"}`,
+    background: theme?.card || "#fff",
+    color: theme?.text || "#111",
+    padding: "12px 14px",
+    outline: "none",
+  };
+
+  const primaryButton = {
+    border: "none",
+    borderRadius: 16,
+    padding: "12px 16px",
+    background: theme?.accent || "#111827",
+    color: "#fff",
+    fontWeight: 600,
+    cursor: "pointer",
+  };
+
+  const secondaryButton = {
+    borderRadius: 16,
+    padding: "12px 16px",
+    background: "transparent",
+    color: theme?.text || "#111",
+    border: `1px solid ${theme?.border || "#e5e7eb"}`,
+    fontWeight: 600,
+    cursor: "pointer",
+  };
 
   return (
-    <div className="space-y-4">
-      <Card>
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold">Simulação de gastos</h2>
-          <p
-            className="text-sm"
-            style={{ color: t.muted }}
-          >
-            Essa área é temporária. Nada aqui altera seus gastos reais.
-          </p>
-        </div>
-      </Card>
-
-      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <Card>
-          <p className="text-sm" style={{ color: t.muted }}>
-            Saldo simulado do mês
-          </p>
-          <h3 className="text-2xl font-bold mt-1">
-            {formatBRL(simulatedBalance)}
-          </h3>
-        </Card>
-
-        <Card>
-          <p className="text-sm" style={{ color: t.muted }}>
-            Pode gastar por dia
-          </p>
-          <h3 className="text-2xl font-bold mt-1">
-            {formatBRL(simulatedDaily)}
-          </h3>
-        </Card>
-
-        <Card>
-          <p className="text-sm" style={{ color: t.muted }}>
-            Renda consumida
-          </p>
-          <h3 className="text-2xl font-bold mt-1">
-            {consumedPercent.toFixed(1)}%
-          </h3>
-        </Card>
-
-        <Card>
-          <p className="text-sm" style={{ color: t.muted }}>
-            Gastos simulados
-          </p>
-          <h3 className="text-2xl font-bold mt-1">
-            {formatBRL(totalSimulatedExpenses)}
-          </h3>
-        </Card>
+    <div style={{ display: "grid", gap: 16 }}>
+      <div style={boxStyle}>
+        <h2 style={{ margin: 0, fontSize: 22 }}>Simulação de gastos</h2>
+        <p style={{ marginTop: 8, color: theme?.muted || "#6b7280" }}>
+          Essa área é temporária. Nada aqui altera seus gastos reais.
+        </p>
       </div>
 
-      <Card>
-        <div className="space-y-4">
-          <div>
-            <h3 className="font-semibold text-base">Adicionar gasto simulado</h3>
-            <p className="text-sm mt-1" style={{ color: t.muted }}>
-              Teste compras, contas ou planos antes de registrar de verdade.
-            </p>
+      <div
+        style={{
+          display: "grid",
+          gap: 12,
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        }}
+      >
+        <div style={boxStyle}>
+          <p style={{ margin: 0, color: theme?.muted || "#6b7280" }}>
+            Saldo simulado
+          </p>
+          <h3 style={{ marginTop: 10 }}>{formatBRL(simulatedBalance)}</h3>
+        </div>
+
+        <div style={boxStyle}>
+          <p style={{ margin: 0, color: theme?.muted || "#6b7280" }}>
+            Pode gastar por dia
+          </p>
+          <h3 style={{ marginTop: 10 }}>{formatBRL(simulatedDaily)}</h3>
+        </div>
+
+        <div style={boxStyle}>
+          <p style={{ margin: 0, color: theme?.muted || "#6b7280" }}>
+            Renda consumida
+          </p>
+          <h3 style={{ marginTop: 10 }}>{consumedPercent.toFixed(1)}%</h3>
+        </div>
+
+        <div style={boxStyle}>
+          <p style={{ margin: 0, color: theme?.muted || "#6b7280" }}>
+            Gastos simulados
+          </p>
+          <h3 style={{ marginTop: 10 }}>{formatBRL(totalSimulatedExpenses)}</h3>
+        </div>
+      </div>
+
+      <div style={boxStyle}>
+        <h3 style={{ marginTop: 0 }}>Adicionar gasto simulado</h3>
+
+        <form
+          onSubmit={handleAddSimExpense}
+          style={{ display: "grid", gap: 12, marginTop: 12 }}
+        >
+          <input
+            type="text"
+            placeholder="Descrição"
+            value={form.description}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, description: e.target.value }))
+            }
+            style={inputStyle}
+          />
+
+          <input
+            type="number"
+            step="0.01"
+            placeholder="Valor"
+            value={form.amount}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, amount: e.target.value }))
+            }
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            placeholder="Categoria (opcional)"
+            value={form.category}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, category: e.target.value }))
+            }
+            style={inputStyle}
+          />
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <button type="submit" style={primaryButton}>
+              Adicionar simulação
+            </button>
+
+            <button
+              type="button"
+              onClick={handleClearSimulation}
+              style={secondaryButton}
+            >
+              Limpar tudo
+            </button>
           </div>
+        </form>
+      </div>
 
-          <form onSubmit={handleAddSimExpense} className="grid gap-3 md:grid-cols-3">
-            <input
-              type="text"
-              placeholder="Descrição"
-              value={form.description}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, description: e.target.value }))
-              }
-              className="rounded-2xl px-4 py-3 outline-none border"
-              style={{
-                background: t.card,
-                color: t.text,
-                borderColor: t.border,
-              }}
-            />
+      <div style={boxStyle}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 12,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <h3 style={{ margin: 0 }}>Gastos simulados</h3>
+          <span style={{ color: theme?.muted || "#6b7280" }}>
+            {simExpenses.length} item(ns)
+          </span>
+        </div>
 
-            <input
-              type="number"
-              step="0.01"
-              placeholder="Valor"
-              value={form.amount}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, amount: e.target.value }))
-              }
-              className="rounded-2xl px-4 py-3 outline-none border"
-              style={{
-                background: t.card,
-                color: t.text,
-                borderColor: t.border,
-              }}
-            />
-
-            <input
-              type="text"
-              placeholder="Categoria (opcional)"
-              value={form.category}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, category: e.target.value }))
-              }
-              className="rounded-2xl px-4 py-3 outline-none border"
-              style={{
-                background: t.card,
-                color: t.text,
-                borderColor: t.border,
-              }}
-            />
-
-            <div className="md:col-span-3 flex flex-wrap gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 rounded-2xl font-medium"
+        {simExpenses.length === 0 ? (
+          <p style={{ marginTop: 12, color: theme?.muted || "#6b7280" }}>
+            Nenhum gasto simulado ainda.
+          </p>
+        ) : (
+          <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+            {simExpenses.map((item) => (
+              <div
+                key={item.id}
                 style={{
-                  background: t.accent,
-                  color: "#fff",
+                  border: `1px solid ${theme?.border || "#e5e7eb"}`,
+                  borderRadius: 18,
+                  padding: 14,
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 12,
+                  flexWrap: "wrap",
                 }}
               >
-                Adicionar simulação
-              </button>
+                <div>
+                  <strong>{item.description}</strong>
+                  <p
+                    style={{
+                      margin: "6px 0 0",
+                      color: theme?.muted || "#6b7280",
+                    }}
+                  >
+                    {item.category || "Sem categoria"}
+                  </p>
+                </div>
 
-              <button
-                type="button"
-                onClick={handleClearSimulation}
-                className="px-4 py-2 rounded-2xl font-medium border"
-                style={{
-                  borderColor: t.border,
-                  color: t.text,
-                }}
-              >
-                Limpar tudo
-              </button>
-            </div>
-          </form>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="space-y-2">
-          <h3 className="font-semibold text-base">Leitura da simulação</h3>
-          <p className="text-sm" style={{ color: t.muted }}>
-            {summaryMessage}
-          </p>
-          <p className="text-sm" style={{ color: t.muted }}>
-            Gastos reais: {formatBRL(totalRealExpenses)} | Total com simulação:{" "}
-            {formatBRL(totalWithSimulation)}
-          </p>
-        </div>
-      </Card>
-
-      <Card>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between gap-3">
-            <h3 className="font-semibold text-base">Gastos simulados</h3>
-            <span className="text-sm" style={{ color: t.muted }}>
-              {simExpenses.length} item(ns)
-            </span>
-          </div>
-
-          {simExpenses.length === 0 ? (
-            <p className="text-sm" style={{ color: t.muted }}>
-              Nenhum gasto simulado ainda.
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {simExpenses.map((item) => (
                 <div
-                  key={item.id}
-                  className="flex items-center justify-between gap-3 rounded-2xl border px-4 py-3"
                   style={{
-                    borderColor: t.border,
-                    background: t.bgSecondary || t.card,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    flexWrap: "wrap",
                   }}
                 >
-                  <div className="min-w-0">
-                    <p className="font-medium truncate">{item.description}</p>
-                    <p className="text-sm" style={{ color: t.muted }}>
-                      {item.category || "Sem categoria"}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-3 shrink-0">
-                    <strong>{formatBRL(item.amount)}</strong>
-                    <button
-                      onClick={() => handleRemoveSimExpense(item.id)}
-                      className="px-3 py-1.5 rounded-xl border text-sm"
-                      style={{
-                        borderColor: t.border,
-                        color: t.text,
-                      }}
-                    >
-                      Remover
-                    </button>
-                  </div>
+                  <strong>{formatBRL(item.amount)}</strong>
+                  <button
+                    onClick={() => handleRemoveSimExpense(item.id)}
+                    style={secondaryButton}
+                  >
+                    Remover
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </Card>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
