@@ -61,7 +61,9 @@ export default function MainApp({
       {tab === "expenses" && <Expenses d={d} save={save} />}
       {tab === "debts" && <Debts d={d} save={save} />}
       {tab === "invest" && <Investments d={d} save={save} />}
-      {tab === "simulation" && <Simulation d={d} salary={salary} remDays={remDays} />}
+      {tab === "simulation" && (
+  <Simulation d={d} salary={salary} remDays={remDays} />
+)}
 
       {tab === "settings" && (
         <Settings
