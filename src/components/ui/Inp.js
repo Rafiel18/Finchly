@@ -6,6 +6,7 @@ export default function Inp({
   value,
   onChange,
   onKeyDown,
+  inputMode,
   style = {},
 }) {
   const t = useTheme();
@@ -17,15 +18,21 @@ export default function Inp({
       value={value}
       onChange={onChange}
       onKeyDown={onKeyDown}
+      inputMode={inputMode}
       style={{
         width: "100%",
         background: t.bgInput,
         border: `1.5px solid ${t.borderInput}`,
         borderRadius: "12px",
-        padding: "11px 14px",
+        padding: "13px 14px",
         color: t.text,
-        fontSize: "14px",
+        fontSize: "16px",
+        lineHeight: "1.2",
         marginBottom: "9px",
+        boxSizing: "border-box",
+        outline: "none",
+        appearance: "none",
+        WebkitAppearance: "none",
         ...style,
       }}
     />
