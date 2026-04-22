@@ -20,7 +20,7 @@ export default function Settings({
   const softTile2 = t.softTile2 || t.bgCard;
 
   const handleSaveSalary = () => {
-    const salary = Number(salaryInput);
+    const salary = Number(String(salaryInput).replace(",", "."));
     if (isNaN(salary) || salary < 0) return;
 
     save({
@@ -213,20 +213,25 @@ export default function Settings({
           </div>
 
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             value={salaryInput}
             onChange={(e) => setSalaryInput(e.target.value)}
             placeholder="Digite sua receita mensal"
             style={{
               width: "100%",
-              padding: "12px",
-              borderRadius: "12px",
+              padding: "14px 16px",
+              borderRadius: "14px",
               border: `1px solid ${t.border}`,
               background: softTile2,
               color: t.text,
               marginBottom: "12px",
-              fontSize: "14px",
+              fontSize: "16px",
+              lineHeight: "1.2",
               boxSizing: "border-box",
+              outline: "none",
+              appearance: "none",
+              WebkitAppearance: "none",
             }}
           />
 
@@ -285,28 +290,28 @@ export default function Settings({
             </p>
 
             <button
-  onClick={() => {
-    const confirmed = window.confirm(
-      "Tem certeza que deseja resetar os dados deste perfil? Essa ação vai limpar salário, gastos, dívidas e investimentos."
-    );
+              onClick={() => {
+                const confirmed = window.confirm(
+                  "Tem certeza que deseja resetar os dados deste perfil? Essa ação vai limpar salário, gastos, dívidas e investimentos."
+                );
 
-    if (confirmed && onResetData) {
-      onResetData();
-    }
-  }}
-  style={{
-    width: "100%",
-    background: "transparent",
-    color: t.negative,
-    border: `1px solid ${t.negative}40`,
-    borderRadius: "12px",
-    padding: "12px",
-    fontWeight: 700,
-    cursor: "pointer",
-  }}
->
-  Resetar dados deste perfil
-</button>
+                if (confirmed && onResetData) {
+                  onResetData();
+                }
+              }}
+              style={{
+                width: "100%",
+                background: "transparent",
+                color: t.negative,
+                border: `1px solid ${t.negative}40`,
+                borderRadius: "12px",
+                padding: "12px",
+                fontWeight: 700,
+                cursor: "pointer",
+              }}
+            >
+              Resetar dados deste perfil
+            </button>
           </div>
         </Card>
 
