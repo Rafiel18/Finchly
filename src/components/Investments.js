@@ -20,14 +20,15 @@ export default function Investments({ d, save }) {
   const [err, setErr] = useState("");
 
   const add = () => {
+    const principal = Number(String(form.principal).replace(",", "."));
+    const cdiPct = Number(String(form.cdiPct).replace(",", "."));
+    const customRate = Number(String(form.customRate).replace(",", "."));
+
     if (!form.name.trim() || !form.principal) {
       return setErr("Preencha nome e valor.");
     }
 
-    if (
-      form.type === "cdi" &&
-      (Number(form.cdiPct) < 80 || Number(form.cdiPct) > 110)
-    ) {
+    if (form.type === "cdi" && (cdiPct < 80 || cdiPct > 110)) {
       return setErr("CDI entre 80% e 110%.");
     }
 
@@ -41,7 +42,9 @@ export default function Investments({ d, save }) {
         {
           ...form,
           id: Date.now(),
-          principal: Number(form.principal),
+          principal,
+          cdiPct: String(cdiPct),
+          customRate: form.type !== "cdi" ? String(customRate) : "",
         },
       ],
     });
@@ -176,7 +179,8 @@ export default function Investments({ d, save }) {
           />
 
           <Inp
-            type="number"
+            type="text"
+            inputMode="decimal"
             placeholder="Valor investido (R$)"
             value={form.principal}
             onChange={(e) =>
@@ -275,7 +279,8 @@ export default function Investments({ d, save }) {
             </>
           ) : (
             <Inp
-              type="number"
+              type="text"
+              inputMode="decimal"
               placeholder="Taxa de rendimento anual (%)"
               value={form.customRate}
               onChange={(e) =>
