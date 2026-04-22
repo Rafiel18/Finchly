@@ -45,7 +45,7 @@ export default function Debts({ d, save }) {
   const addDebt = () => {
     const description = form.description.trim();
     const creditor = form.creditor.trim();
-    const installmentValue = Number(form.installmentValue);
+    const installmentValue = Number(String(form.installmentValue).replace(",", "."));
     const totalInstallments = Number(form.totalInstallments);
     const remainingInstallments = Number(form.remainingInstallments);
     const dueDay = Number(form.dueDay);
@@ -198,7 +198,8 @@ export default function Debts({ d, save }) {
             />
 
             <input
-              type="number"
+              type="text"
+              inputMode="decimal"
               value={form.installmentValue}
               onChange={(e) => updateForm("installmentValue", e.target.value)}
               placeholder="Valor da parcela (R$)"
@@ -213,7 +214,8 @@ export default function Debts({ d, save }) {
               }}
             >
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 value={form.totalInstallments}
                 onChange={(e) => updateForm("totalInstallments", e.target.value)}
                 placeholder="Total de parcelas"
@@ -221,7 +223,8 @@ export default function Debts({ d, save }) {
               />
 
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
                 value={form.remainingInstallments}
                 onChange={(e) => updateForm("remainingInstallments", e.target.value)}
                 placeholder="Restantes"
@@ -230,12 +233,11 @@ export default function Debts({ d, save }) {
             </div>
 
             <input
-              type="number"
+              type="text"
+              inputMode="numeric"
               value={form.dueDay}
               onChange={(e) => updateForm("dueDay", e.target.value)}
               placeholder="Dia do vencimento"
-              min="1"
-              max="31"
               style={inputStyle(t)}
             />
 
@@ -378,68 +380,73 @@ export default function Debts({ d, save }) {
 
                 {editId === dbt.id ? (
                   <div
-  style={{
-    display: "flex",
-    flexWrap: "wrap",
-    gap: "10px",
-    marginTop: "10px",
-  }}
->
-  <input
-    type="number"
-    value={editVal}
-    onChange={(e) => setEditVal(e.target.value)}
-    placeholder="Parcelas restantes"
-    style={{
-      width: "100%",
-      minWidth: 0,
-      padding: "12px",
-      borderRadius: "12px",
-      border: `1px solid ${t.border}`,
-      background: t.bgInput,
-      color: t.text,
-      fontSize: "14px",
-      boxSizing: "border-box",
-    }}
-  />
+                    style={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "10px",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      value={editVal}
+                      onChange={(e) => setEditVal(e.target.value)}
+                      placeholder="Parcelas restantes"
+                      style={{
+                        width: "100%",
+                        minWidth: 0,
+                        padding: "12px 14px",
+                        borderRadius: "12px",
+                        border: `1px solid ${t.border}`,
+                        background: t.bgInput,
+                        color: t.text,
+                        fontSize: "16px",
+                        lineHeight: "1.2",
+                        boxSizing: "border-box",
+                        outline: "none",
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                      }}
+                    />
 
-  <button
-    onClick={() => saveRemaining(dbt.id)}
-    style={{
-      flex: "1 1 140px",
-      minWidth: "120px",
-      background: t.accent,
-      color: "#fff",
-      border: "none",
-      borderRadius: "12px",
-      padding: "12px 14px",
-      cursor: "pointer",
-      fontWeight: 700,
-    }}
-  >
-    Salvar
-  </button>
+                    <button
+                      onClick={() => saveRemaining(dbt.id)}
+                      style={{
+                        flex: "1 1 140px",
+                        minWidth: "120px",
+                        background: t.accent,
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                      }}
+                    >
+                      Salvar
+                    </button>
 
-  <button
-    onClick={() => {
-      setEditId(null);
-      setEditVal("");
-    }}
-    style={{
-      flex: "1 1 140px",
-      minWidth: "120px",
-      background: "#fff",
-      color: t.textSub,
-      border: `1px solid ${t.border}`,
-      borderRadius: "12px",
-      padding: "12px 14px",
-      cursor: "pointer",
-      fontWeight: 700,
-    }}
-  >
-    Cancelar
-  </button>
-</div>
+                    <button
+                      onClick={() => {
+                        setEditId(null);
+                        setEditVal("");
+                      }}
+                      style={{
+                        flex: "1 1 140px",
+                        minWidth: "120px",
+                        background: "#fff",
+                        color: t.textSub,
+                        border: `1px solid ${t.border}`,
+                        borderRadius: "12px",
+                        padding: "12px 14px",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                      }}
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 ) : (
                   <button
                     onClick={() => {
@@ -478,8 +485,11 @@ function inputStyle(t) {
     border: `1px solid ${t.border}`,
     background: t.bgInput,
     color: t.text,
-    fontSize: "15px",
+    fontSize: "16px",
+    lineHeight: "1.2",
     outline: "none",
     boxSizing: "border-box",
+    appearance: "none",
+    WebkitAppearance: "none",
   };
 }
