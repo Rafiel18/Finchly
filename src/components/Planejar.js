@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Planejar({ d, salary = 0, remDays = 1 }) {
+export default function Planejar({ d, salary, remDays }) {
   const t = useTheme();
 
   const [form, setForm] = useState({
@@ -17,28 +17,31 @@ export default function Planejar({ d, salary = 0, remDays = 1 }) {
 
   const realExpenses = Array.isArray(d?.expenses) ? d.expenses : [];
 
-  const totalRealExpenses = useMemo(() => {
-    return realExpenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  }, [realExpenses]);
+  const totalRealExpenses = realExpenses.reduce((sum, item) => {
+    return sum + Number(item.amount || 0);
+  }, 0);
 
-  const totalSimulatedExpenses = useMemo(() => {
-    return simExpenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-  }, [simExpenses]);
+  const totalSimulatedExpenses = simExpenses.reduce((sum, item) => {
+    return sum + Number(item.amount || 0);
+  }, 0);
 
   const totalWithSimulation = totalRealExpenses + totalSimulatedExpenses;
-  const simulatedBalance = Number(salary || 0) - totalWithSimulation;
-  const simulatedDaily = remDays > 0 ? simulatedBalance / remDays : simulatedBalance;
-  const consumedPercent =
-    Number(salary || 0) > 0
-      ? Math.min((totalWithSimulation / Number(salary)) * 100, 999)
-      : 0;
+  const safeSalary = Number(salary || 0);
+  const safeRemDays = Number(remDays || 1);
 
-  const summaryMessage =
-    simExpenses.length === 0
-      ? "Adicione gastos simulados para ver o impacto no seu mês."
-      : simulatedBalance >= 0
-      ? "Seu planejamento ainda fecha no azul."
-      : "Atenção: com essa simulação, o mês fecha no vermelho.";
+  const simulatedBalance = safeSalary - totalWithSimulation;
+  const simulatedDaily = safeRemDays > 0 ? simulatedBalance / safeRemDays : simulatedBalance;
+  const consumedPercent =
+    safeSalary > 0 ? Math.min((totalWithSimulation / safeSalary) * 100, 999) : 0;
+
+  let summaryMessage = "Adicione gastos simulados para ver o impacto no seu mês.";
+
+  if (simExpenses.length > 0) {
+    summaryMessage =
+      simulatedBalance >= 0
+        ? "Seu planejamento ainda fecha no azul."
+        : "Atenção: com essa simulação, o mês fecha no vermelho.";
+  }
 
   const inputStyle = {
     width: "100%",
@@ -67,9 +70,9 @@ export default function Planejar({ d, salary = 0, remDays = 1 }) {
 
     const newExpense = {
       id: String(Date.now()),
-      description,
-      amount,
-      category,
+      description: description,
+      amount: amount,
+      category: category,
     };
 
     setSimExpenses((prev) => [newExpense, ...prev]);
@@ -268,7 +271,9 @@ export default function Planejar({ d, salary = 0, remDays = 1 }) {
             <input
               type="text"
               value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, description: e.target.value }))
+              }
               placeholder="Descrição"
               style={inputStyle}
             />
@@ -277,7 +282,9 @@ export default function Planejar({ d, salary = 0, remDays = 1 }) {
               type="text"
               inputMode="decimal"
               value={form.amount}
-              onChange={(e) => setForm((f) => ({ ...f, amount: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, amount: e.target.value }))
+              }
               placeholder="Valor (R$)"
               style={inputStyle}
             />
@@ -285,16 +292,18 @@ export default function Planejar({ d, salary = 0, remDays = 1 }) {
             <input
               type="text"
               value={form.category}
-              onChange={(e) => setForm((f) => ({ ...f, category: e.target.value }))}
+              onChange={(e) =>
+                setForm((prev) => ({ ...prev, category: e.target.value }))
+              }
               placeholder="Categoria (opcional)"
               style={inputStyle}
             />
 
-            {err && (
+            {err ? (
               <p style={{ color: t.negative, fontSize: "12px", marginTop: "-4px" }}>
                 {err}
               </p>
-            )}
+            ) : null}
 
             <div
               style={{
