@@ -1,42 +1,43 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Planejar({ d, salary, remDays }) {
+export default function Planejar() {
   const t = useTheme();
 
+  const [simSalary, setSimSalary] = useState("");
   const [form, setForm] = useState({
     description: "",
     amount: "",
     category: "",
   });
-
   const [simExpenses, setSimExpenses] = useState([]);
   const [err, setErr] = useState("");
 
-  const realExpenses = Array.isArray(d?.expenses) ? d.expenses : [];
+  const now = new Date();
+  const currentDay = now.getDate();
+  const totalDays = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const remDays = Math.max(totalDays - currentDay + 1, 1);
 
-  const totalRealExpenses = realExpenses.reduce((sum, item) => {
-    return sum + Number(item.amount || 0);
-  }, 0);
+  const salaryValue = Number(String(simSalary).replace(",", ".")) || 0;
 
-  const totalSimulatedExpenses = simExpenses.reduce((sum, item) => {
-    return sum + Number(item.amount || 0);
-  }, 0);
+  const totalSimulatedExpenses = useMemo(() => {
+    return simExpenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  }, [simExpenses]);
 
-  const totalWithSimulation = totalRealExpenses + totalSimulatedExpenses;
-  const safeSalary = Number(salary || 0);
-  const safeRemDays = Number(remDays || 1);
-
-  const simulatedBalance = safeSalary - totalWithSimulation;
-  const simulatedDaily = safeRemDays > 0 ? simulatedBalance / safeRemDays : simulatedBalance;
+  const simulatedBalance = salaryValue - totalSimulatedExpenses;
+  const simulatedDaily = remDays > 0 ? simulatedBalance / remDays : simulatedBalance;
   const consumedPercent =
-    safeSalary > 0 ? Math.min((totalWithSimulation / safeSalary) * 100, 999) : 0;
+    salaryValue > 0 ? Math.min((totalSimulatedExpenses / salaryValue) * 100, 999) : 0;
 
-  let summaryMessage = "Adicione gastos simulados para ver o impacto no seu mês.";
+  let summaryMessage = "Defina um salário e adicione gastos para montar sua simulação.";
 
-  if (simExpenses.length > 0) {
+  if (salaryValue > 0 && simExpenses.length === 0) {
+    summaryMessage = "Agora adicione gastos simulados para ver o impacto no mês.";
+  }
+
+  if (salaryValue > 0 && simExpenses.length > 0) {
     summaryMessage =
       simulatedBalance >= 0
         ? "Seu planejamento ainda fecha no azul."
@@ -70,9 +71,9 @@ export default function Planejar({ d, salary, remDays }) {
 
     const newExpense = {
       id: String(Date.now()),
-      description: description,
-      amount: amount,
-      category: category,
+      description,
+      amount,
+      category,
     };
 
     setSimExpenses((prev) => [newExpense, ...prev]);
@@ -89,7 +90,13 @@ export default function Planejar({ d, salary, remDays }) {
   };
 
   const clearSimulation = () => {
+    setSimSalary("");
     setSimExpenses([]);
+    setForm({
+      description: "",
+      amount: "",
+      category: "",
+    });
     setErr("");
   };
 
@@ -114,9 +121,38 @@ export default function Planejar({ d, salary, remDays }) {
           </h2>
 
           <p style={{ color: t.textSub, fontSize: "14px" }}>
-            Simule decisões antes de registrar de verdade
+            Monte uma simulação completa sem mexer nos dados reais
           </p>
         </div>
+
+        <Card
+          style={{
+            padding: "16px",
+            marginBottom: "14px",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <h3
+            style={{
+              fontSize: "20px",
+              fontWeight: 800,
+              color: t.text,
+              marginBottom: "14px",
+            }}
+          >
+            Salário da simulação
+          </h3>
+
+          <input
+            type="text"
+            inputMode="decimal"
+            value={simSalary}
+            onChange={(e) => setSimSalary(e.target.value)}
+            placeholder="Digite o salário da simulação"
+            style={inputStyle}
+          />
+        </Card>
 
         <Card
           style={{
@@ -150,8 +186,8 @@ export default function Planejar({ d, salary, remDays }) {
           </p>
 
           <p style={{ fontSize: "13px", color: t.textSub, lineHeight: 1.5 }}>
-            Gastos reais: <strong>{formatBRL(totalRealExpenses)}</strong> · Total com simulação:{" "}
-            <strong>{formatBRL(totalWithSimulation)}</strong>
+            Salário: <strong>{formatBRL(salaryValue)}</strong> · Gastos simulados:{" "}
+            <strong>{formatBRL(totalSimulatedExpenses)}</strong>
           </p>
         </Card>
 
@@ -222,7 +258,7 @@ export default function Planejar({ d, salary, remDays }) {
                 color: consumedPercent >= 100 ? t.negative : t.warning,
               }}
             >
-              {consumedPercent.toFixed(1)}%
+              {salaryValue > 0 ? `${consumedPercent.toFixed(1)}%` : "--"}
             </p>
           </Card>
 
@@ -271,9 +307,7 @@ export default function Planejar({ d, salary, remDays }) {
             <input
               type="text"
               value={form.description}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, description: e.target.value }))
-              }
+              onChange={(e) => setForm((prev) => ({ ...prev, description: e.target.value }))}
               placeholder="Descrição"
               style={inputStyle}
             />
@@ -282,9 +316,7 @@ export default function Planejar({ d, salary, remDays }) {
               type="text"
               inputMode="decimal"
               value={form.amount}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, amount: e.target.value }))
-              }
+              onChange={(e) => setForm((prev) => ({ ...prev, amount: e.target.value }))}
               placeholder="Valor (R$)"
               style={inputStyle}
             />
@@ -292,9 +324,7 @@ export default function Planejar({ d, salary, remDays }) {
             <input
               type="text"
               value={form.category}
-              onChange={(e) =>
-                setForm((prev) => ({ ...prev, category: e.target.value }))
-              }
+              onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
               placeholder="Categoria (opcional)"
               style={inputStyle}
             />
