@@ -3,15 +3,19 @@ import Card from "./ui/Card";
 import { useTheme } from "../context/theme";
 import { formatBRL } from "../utils/formatters";
 
-export default function Horizonte({ salary = 0, balance = 0, remDays = 1 }) {
+export default function Horizonte({ d, salary = 0, balance = 0, remDays = 1 }) {
   const t = useTheme();
 
   const safeSalary = Number(salary || 0);
   const safeBalance = Number(balance || 0);
   const safeRemDays = Math.max(Number(remDays || 1), 1);
 
+  const expenses = Array.isArray(d?.expenses) ? d.expenses : [];
+  const debts = Array.isArray(d?.debts) ? d.debts : [];
+
   const now = new Date();
   const currentDay = now.getDate();
+
   const currentMonthLabel = now.toLocaleDateString("pt-BR", {
     month: "short",
     year: "2-digit",
@@ -75,6 +79,110 @@ export default function Horizonte({ salary = 0, balance = 0, remDays = 1 }) {
     }
   }
 
+  const totalSpent = expenses.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+  const avgDailySpendSoFar = currentDay > 0 ? totalSpent / currentDay : 0;
+
+  function getMonthInfo(offset) {
+    const date = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    return {
+      year,
+      month,
+      label: date.toLocaleDateString("pt-BR", {
+        month: "short",
+        year: "2-digit",
+      }),
+      daysInMonth,
+    };
+  }
+
+  function getDayTone(value) {
+    if (value < 0) {
+      return {
+        bg: t.negativeSoft,
+        color: t.negative,
+      };
+    }
+
+    if (safeSalary > 0 && value <= safeSalary * 0.1) {
+      return {
+        bg: t.warningSoft,
+        color: t.warning,
+      };
+    }
+
+    return {
+      bg: t.positiveSoft,
+      color: t.positive,
+    };
+  }
+
+  const month0 = getMonthInfo(0);
+  const month1 = getMonthInfo(1);
+  const month2 = getMonthInfo(2);
+
+  function buildMonthProjection(monthInfo, startBalance, isCurrentMonth) {
+    let runningBalance = startBalance;
+
+    const rows = [];
+
+    for (let day = 1; day <= monthInfo.daysInMonth; day++) {
+      if (!isCurrentMonth && day === 1) {
+        runningBalance += safeSalary;
+      }
+
+      const debtOut = debts.reduce((sum, dbt) => {
+        const dueDay = Number(dbt.dueDay || 0);
+        const installmentValue = Number(dbt.installmentValue || 0);
+        const remainingInstallments = Number(dbt.remainingInstallments || 0);
+
+        if (remainingInstallments > 0 && dueDay === day) {
+          return sum + installmentValue;
+        }
+        return sum;
+      }, 0);
+
+      const variableOut = avgDailySpendSoFar;
+
+      if (isCurrentMonth) {
+        if (day >= currentDay) {
+          runningBalance -= debtOut;
+          if (day > currentDay) {
+            runningBalance -= variableOut;
+          }
+        }
+      } else {
+        runningBalance -= debtOut;
+        runningBalance -= variableOut;
+      }
+
+      rows.push({
+        day,
+        balance: runningBalance,
+        ...getDayTone(runningBalance),
+      });
+    }
+
+    return rows;
+  }
+
+  const currentMonthRows = buildMonthProjection(month0, safeBalance, true);
+  const nextMonthRows = buildMonthProjection(
+    month1,
+    currentMonthRows[currentMonthRows.length - 1]?.balance || safeBalance,
+    false
+  );
+  const thirdMonthRows = buildMonthProjection(
+    month2,
+    nextMonthRows[nextMonthRows.length - 1]?.balance || safeBalance,
+    false
+  );
+
+  const maxRows = Math.max(month0.daysInMonth, month1.daysInMonth, month2.daysInMonth);
+
   return (
     <div
       style={{
@@ -96,7 +204,7 @@ export default function Horizonte({ salary = 0, balance = 0, remDays = 1 }) {
           </h2>
 
           <p style={{ color: t.textSub, fontSize: "14px" }}>
-            Projeção visual do saldo até o fim do mês
+            Projeção visual do saldo até os próximos meses
           </p>
         </div>
 
@@ -342,6 +450,7 @@ export default function Horizonte({ salary = 0, balance = 0, remDays = 1 }) {
             overflow: "hidden",
             background: t.bgCard,
             border: `1px solid ${t.border}`,
+            marginBottom: "14px",
           }}
         >
           <div
@@ -489,6 +598,127 @@ export default function Horizonte({ salary = 0, balance = 0, remDays = 1 }) {
                   </div>
                 </React.Fragment>
               ))}
+            </div>
+          </div>
+        </Card>
+
+        <Card
+          style={{
+            padding: "0",
+            overflow: "hidden",
+            background: t.bgCard,
+            border: `1px solid ${t.border}`,
+          }}
+        >
+          <div
+            style={{
+              padding: "16px 16px 14px",
+              borderBottom: `1px solid ${t.border}`,
+            }}
+          >
+            <p
+              style={{
+                fontSize: "11px",
+                color: t.textMuted,
+                fontWeight: 800,
+                textTransform: "uppercase",
+                marginBottom: "6px",
+              }}
+            >
+              Horizonte expandido
+            </p>
+            <h3
+              style={{
+                fontSize: "22px",
+                fontWeight: 800,
+                color: t.text,
+              }}
+            >
+              3 meses
+            </h3>
+          </div>
+
+          <div style={{ overflowX: "auto" }}>
+            <div style={{ minWidth: "760px" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "60px 1fr 1fr 1fr",
+                }}
+              >
+                <div
+                  style={{
+                    background: t.bgInput,
+                    borderBottom: `1px solid ${t.border}`,
+                    padding: "12px",
+                  }}
+                />
+
+                {[month0, month1, month2].map((month) => (
+                  <div
+                    key={month.label}
+                    style={{
+                      background: t.bgInput,
+                      borderBottom: `1px solid ${t.border}`,
+                      borderLeft: `1px solid ${t.border}`,
+                      padding: "12px",
+                      textAlign: "center",
+                      fontSize: "16px",
+                      fontWeight: 800,
+                      color: t.text,
+                    }}
+                  >
+                    {month.label}
+                  </div>
+                ))}
+              </div>
+
+              {Array.from({ length: maxRows }, (_, index) => {
+                const rowDay = index + 1;
+                const row0 = currentMonthRows[index];
+                const row1 = nextMonthRows[index];
+                const row2 = thirdMonthRows[index];
+
+                return (
+                  <div
+                    key={rowDay}
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "60px 1fr 1fr 1fr",
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "12px",
+                        borderBottom: `1px solid ${t.border}`,
+                        fontSize: "15px",
+                        color: t.text,
+                        fontWeight: 700,
+                      }}
+                    >
+                      {rowDay}
+                    </div>
+
+                    {[row0, row1, row2].map((row, idx) => (
+                      <div
+                        key={idx}
+                        style={{
+                          padding: "12px",
+                          borderBottom: `1px solid ${t.border}`,
+                          borderLeft: `1px solid ${t.border}`,
+                          background: row ? row.bg : t.bgCard,
+                          color: row ? row.color : t.textMuted,
+                          fontSize: "14px",
+                          fontWeight: 800,
+                          textAlign: "center",
+                        }}
+                      >
+                        {row ? formatBRL(row.balance) : "--"}
+                      </div>
+                    ))}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </Card>
