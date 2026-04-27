@@ -5,6 +5,7 @@ import Expenses from "./Expenses";
 import Investments from "./Investments";
 import Settings from "./Settings";
 import Planejar from "./Planejar";
+import Horizonte from "./Horizonte";
 import TopBar from "./layout/TopBar";
 import BottomNav from "./layout/BottomNav";
 import AppShell from "./layout/AppShell";
@@ -62,6 +63,9 @@ export default function MainApp({
       {tab === "debts" && <Debts d={d} save={save} />}
       {tab === "invest" && <Investments d={d} save={save} />}
       {tab === "planejar" && <Planejar />}
+      {tab === "horizonte" && (
+        <Horizonte d={d} salary={salary} balance={balance} remDays={remDays} />
+      )}
       {tab === "settings" && (
         <Settings
           d={d}
