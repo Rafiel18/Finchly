@@ -1,11 +1,40 @@
 import { useState } from "react";
 import { useTheme } from "../context/theme";
-import { formatBRL, formatPct } from "../utils/formatters";
+import { formatPct } from "../utils/formatters";
 import { calcProj } from "../utils/finance";
 import { CDI_AA, INV_TYPES } from "../constants/finance";
 import Card from "./ui/Card";
 import Inp from "./ui/Inp";
 import Btn from "./ui/Btn";
+
+const CURRENCIES = [
+  { id: "BRL", label: "Real (BRL)" },
+  { id: "USD", label: "Dólar (USD)" },
+  { id: "EUR", label: "Euro (EUR)" },
+];
+
+function formatMoneyByCurrency(value, currency) {
+  const number = Number(value || 0);
+
+  if (currency === "USD") {
+    return number.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "USD",
+    });
+  }
+
+  if (currency === "EUR") {
+    return number.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "EUR",
+    });
+  }
+
+  return number.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}
 
 export default function Investments({ d, save }) {
   const t = useTheme();
@@ -14,10 +43,13 @@ export default function Investments({ d, save }) {
     name: "",
     type: "cdi",
     principal: "",
+    currency: "BRL",
     cdiPct: "100",
     customRate: "",
   });
   const [err, setErr] = useState("");
+
+  const investments = Array.isArray(d?.investments) ? d.investments : [];
 
   const add = () => {
     const principal = Number(String(form.principal).replace(",", "."));
@@ -26,6 +58,10 @@ export default function Investments({ d, save }) {
 
     if (!form.name.trim() || !form.principal) {
       return setErr("Preencha nome e valor.");
+    }
+
+    if (!principal || principal <= 0) {
+      return setErr("Informe um valor investido válido.");
     }
 
     if (form.type === "cdi" && (cdiPct < 80 || cdiPct > 110)) {
@@ -38,11 +74,12 @@ export default function Investments({ d, save }) {
 
     save({
       investments: [
-        ...d.investments,
+        ...investments,
         {
           ...form,
           id: Date.now(),
           principal,
+          currency: form.currency || "BRL",
           cdiPct: String(cdiPct),
           customRate: form.type !== "cdi" ? String(customRate) : "",
         },
@@ -53,6 +90,7 @@ export default function Investments({ d, save }) {
       name: "",
       type: "cdi",
       principal: "",
+      currency: "BRL",
       cdiPct: "100",
       customRate: "",
     });
@@ -62,22 +100,25 @@ export default function Investments({ d, save }) {
 
   const remove = (id) => {
     save({
-      investments: d.investments.filter((inv) => inv.id !== id),
+      investments: investments.filter((inv) => inv.id !== id),
     });
   };
 
-  const totalInv = d.investments.reduce(
-    (sum, inv) => sum + Number(inv.principal),
-    0
-  );
-  const totalMon = d.investments.reduce(
-    (sum, inv) => sum + calcProj(inv).monthly,
-    0
-  );
-  const totalYea = d.investments.reduce(
-    (sum, inv) => sum + calcProj(inv).yearly,
-    0
-  );
+  const totalsByCurrency = CURRENCIES.map((currency) => {
+    const items = investments.filter((inv) => (inv.currency || "BRL") === currency.id);
+
+    const invested = items.reduce((sum, inv) => sum + Number(inv.principal || 0), 0);
+    const monthly = items.reduce((sum, inv) => sum + calcProj(inv).monthly, 0);
+    const yearly = items.reduce((sum, inv) => sum + calcProj(inv).yearly, 0);
+
+    return {
+      ...currency,
+      invested,
+      monthly,
+      yearly,
+      count: items.length,
+    };
+  });
 
   return (
     <div className="fade-up">
@@ -122,39 +163,126 @@ export default function Investments({ d, save }) {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr 1fr",
-          gap: "8px",
+          gap: "10px",
           marginBottom: "14px",
         }}
       >
-        {[
-          { label: "Investido", value: totalInv, color: t.accentBlue },
-          { label: "Rend./mês", value: totalMon, color: t.positive },
-          { label: "Rend./ano", value: totalYea, color: "#8E6DC8" },
-        ].map((c) => (
-          <Card key={c.label} style={{ padding: "11px 9px", textAlign: "center" }}>
-            <p
+        {totalsByCurrency.map((currency) => (
+          <Card key={currency.id} style={{ padding: "14px" }}>
+            <div
               style={{
-                fontSize: "9px",
-                color: t.textMuted,
-                textTransform: "uppercase",
-                letterSpacing: "0.5px",
-                marginBottom: "4px",
-                fontWeight: 600,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "12px",
+                marginBottom: "10px",
+                flexWrap: "wrap",
               }}
             >
-              {c.label}
-            </p>
-            <p
+              <div>
+                <p
+                  style={{
+                    fontSize: "11px",
+                    color: t.textMuted,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                    marginBottom: "4px",
+                    fontWeight: 700,
+                  }}
+                >
+                  {currency.label}
+                </p>
+                <p style={{ fontSize: "14px", fontWeight: 800, color: t.text }}>
+                  {currency.count} investimento(s)
+                </p>
+              </div>
+
+              <div style={{ textAlign: "right" }}>
+                <p
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: 800,
+                    color: t.accentBlue,
+                    fontFamily: "'JetBrains Mono'",
+                  }}
+                >
+                  {formatMoneyByCurrency(currency.invested, currency.id)}
+                </p>
+                <p style={{ fontSize: "11px", color: t.textSub }}>
+                  total investido
+                </p>
+              </div>
+            </div>
+
+            <div
               style={{
-                fontSize: "11px",
-                fontWeight: 700,
-                fontFamily: "'JetBrains Mono'",
-                color: c.color,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: "8px",
               }}
             >
-              {formatBRL(c.value)}
-            </p>
+              <div
+                style={{
+                  background: t.bgInput,
+                  borderRadius: "10px",
+                  padding: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "10px",
+                    color: t.textMuted,
+                    marginBottom: "4px",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Rend./mês
+                </p>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: t.positive,
+                    fontFamily: "'JetBrains Mono'",
+                  }}
+                >
+                  {formatMoneyByCurrency(currency.monthly, currency.id)}
+                </p>
+              </div>
+
+              <div
+                style={{
+                  background: t.bgInput,
+                  borderRadius: "10px",
+                  padding: "10px",
+                  textAlign: "center",
+                }}
+              >
+                <p
+                  style={{
+                    fontSize: "10px",
+                    color: t.textMuted,
+                    marginBottom: "4px",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Rend./ano
+                </p>
+                <p
+                  style={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    color: "#8E6DC8",
+                    fontFamily: "'JetBrains Mono'",
+                  }}
+                >
+                  {formatMoneyByCurrency(currency.yearly, currency.id)}
+                </p>
+              </div>
+            </div>
           </Card>
         ))}
       </div>
@@ -173,7 +301,7 @@ export default function Investments({ d, save }) {
           </h3>
 
           <Inp
-            placeholder="Nome (ex: Tesouro Selic, XPML11...)"
+            placeholder="Nome (ex: Tesouro Selic, Avenue USD, Reserva EUR...)"
             value={form.name}
             onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           />
@@ -181,12 +309,51 @@ export default function Investments({ d, save }) {
           <Inp
             type="text"
             inputMode="decimal"
-            placeholder="Valor investido (R$)"
+            placeholder="Valor investido"
             value={form.principal}
             onChange={(e) =>
               setForm((f) => ({ ...f, principal: e.target.value }))
             }
           />
+
+          <p
+            style={{
+              fontSize: "11px",
+              color: t.textSub,
+              marginBottom: "8px",
+              fontWeight: 600,
+            }}
+          >
+            Moeda
+          </p>
+
+          <select
+            value={form.currency}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, currency: e.target.value }))
+            }
+            style={{
+              width: "100%",
+              background: t.bgInput,
+              border: `1.5px solid ${t.borderInput}`,
+              borderRadius: "12px",
+              padding: "13px 14px",
+              color: t.text,
+              fontSize: "16px",
+              lineHeight: "1.2",
+              marginBottom: "11px",
+              boxSizing: "border-box",
+              outline: "none",
+              appearance: "none",
+              WebkitAppearance: "none",
+            }}
+          >
+            {CURRENCIES.map((currency) => (
+              <option key={currency.id} value={currency.id}>
+                {currency.label}
+              </option>
+            ))}
+          </select>
 
           <p
             style={{
@@ -301,15 +468,16 @@ export default function Investments({ d, save }) {
         </Card>
       )}
 
-      {d.investments.length === 0 ? (
+      {investments.length === 0 ? (
         <div style={{ textAlign: "center", padding: "36px 20px", color: t.textMuted }}>
           <p style={{ fontSize: "34px", marginBottom: "8px" }}>🌱</p>
           <p style={{ fontSize: "13px" }}>Nenhum investimento registrado.</p>
         </div>
       ) : (
-        d.investments.map((inv) => {
+        investments.map((inv) => {
           const proj = calcProj(inv);
           const tp = INV_TYPES.find((x) => x.id === inv.type) || INV_TYPES[0];
+          const currency = inv.currency || "BRL";
 
           return (
             <Card
@@ -343,7 +511,7 @@ export default function Investments({ d, save }) {
                     </p>
                   </div>
                   <p style={{ fontSize: "11px", color: t.textMuted }}>
-                    {tp.label}
+                    {tp.label} · {currency}
                     {inv.type === "cdi"
                       ? ` · ${inv.cdiPct}% CDI`
                       : ` · ${inv.customRate}% a.a.`}
@@ -378,9 +546,21 @@ export default function Investments({ d, save }) {
                 }}
               >
                 {[
-                  { label: "Investido", value: inv.principal, color: t.text },
-                  { label: "Rend./mês", value: proj.monthly, color: t.positive },
-                  { label: "Rend./ano", value: proj.yearly, color: "#8E6DC8" },
+                  {
+                    label: "Investido",
+                    value: inv.principal,
+                    color: t.text,
+                  },
+                  {
+                    label: "Rend./mês",
+                    value: proj.monthly,
+                    color: t.positive,
+                  },
+                  {
+                    label: "Rend./ano",
+                    value: proj.yearly,
+                    color: "#8E6DC8",
+                  },
                 ].map((c) => (
                   <div
                     key={c.label}
@@ -411,7 +591,7 @@ export default function Investments({ d, save }) {
                         fontFamily: "'JetBrains Mono'",
                       }}
                     >
-                      {formatBRL(c.value)}
+                      {formatMoneyByCurrency(c.value, currency)}
                     </p>
                   </div>
                 ))}
