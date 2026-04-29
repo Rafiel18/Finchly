@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTheme } from "../context/theme";
-import { formatPct } from "../utils/formatters";
+import { formatBRL, formatPct } from "../utils/formatters";
 import { calcProj } from "../utils/finance";
 import { CDI_AA, INV_TYPES } from "../constants/finance";
 import Card from "./ui/Card";
@@ -36,6 +36,20 @@ function formatMoneyByCurrency(value, currency) {
   });
 }
 
+function getFxRateToBRL(inv) {
+  if ((inv.currency || "BRL") === "BRL") return 1;
+  return Number(String(inv.fxRate || 0).replace(",", ".")) || 0;
+}
+
+function getConvertedToBRL(value, currency, fxRate) {
+  const number = Number(value || 0);
+
+  if (currency === "BRL") return number;
+  if (!fxRate || fxRate <= 0) return 0;
+
+  return number * fxRate;
+}
+
 export default function Investments({ d, save }) {
   const t = useTheme();
   const [showForm, setShowForm] = useState(false);
@@ -44,6 +58,7 @@ export default function Investments({ d, save }) {
     type: "cdi",
     principal: "",
     currency: "BRL",
+    fxRate: "",
     cdiPct: "100",
     customRate: "",
   });
@@ -55,6 +70,7 @@ export default function Investments({ d, save }) {
     const principal = Number(String(form.principal).replace(",", "."));
     const cdiPct = Number(String(form.cdiPct).replace(",", "."));
     const customRate = Number(String(form.customRate).replace(",", "."));
+    const fxRate = Number(String(form.fxRate).replace(",", "."));
 
     if (!form.name.trim() || !form.principal) {
       return setErr("Preencha nome e valor.");
@@ -72,6 +88,10 @@ export default function Investments({ d, save }) {
       return setErr("Informe a taxa anual.");
     }
 
+    if (form.currency !== "BRL" && (!fxRate || fxRate <= 0)) {
+      return setErr("Informe uma cotação válida para converter em real.");
+    }
+
     save({
       investments: [
         ...investments,
@@ -80,6 +100,7 @@ export default function Investments({ d, save }) {
           id: Date.now(),
           principal,
           currency: form.currency || "BRL",
+          fxRate: form.currency === "BRL" ? "" : String(fxRate),
           cdiPct: String(cdiPct),
           customRate: form.type !== "cdi" ? String(customRate) : "",
         },
@@ -91,6 +112,7 @@ export default function Investments({ d, save }) {
       type: "cdi",
       principal: "",
       currency: "BRL",
+      fxRate: "",
       cdiPct: "100",
       customRate: "",
     });
@@ -119,6 +141,26 @@ export default function Investments({ d, save }) {
       count: items.length,
     };
   });
+
+  const totalInvestedBRL = investments.reduce((sum, inv) => {
+    const currency = inv.currency || "BRL";
+    const fxRate = getFxRateToBRL(inv);
+    return sum + getConvertedToBRL(inv.principal, currency, fxRate);
+  }, 0);
+
+  const totalMonthlyBRL = investments.reduce((sum, inv) => {
+    const proj = calcProj(inv);
+    const currency = inv.currency || "BRL";
+    const fxRate = getFxRateToBRL(inv);
+    return sum + getConvertedToBRL(proj.monthly, currency, fxRate);
+  }, 0);
+
+  const totalYearlyBRL = investments.reduce((sum, inv) => {
+    const proj = calcProj(inv);
+    const currency = inv.currency || "BRL";
+    const fxRate = getFxRateToBRL(inv);
+    return sum + getConvertedToBRL(proj.yearly, currency, fxRate);
+  }, 0);
 
   return (
     <div className="fade-up">
@@ -159,6 +201,55 @@ export default function Investments({ d, save }) {
           {showForm ? "Cancelar" : "+ Novo"}
         </button>
       </div>
+
+      <Card style={{ padding: "14px", marginBottom: "14px" }}>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr 1fr",
+            gap: "8px",
+          }}
+        >
+          {[
+            { label: "Total em BRL", value: totalInvestedBRL, color: t.accentBlue },
+            { label: "Rend./mês BRL", value: totalMonthlyBRL, color: t.positive },
+            { label: "Rend./ano BRL", value: totalYearlyBRL, color: "#8E6DC8" },
+          ].map((c) => (
+            <div
+              key={c.label}
+              style={{
+                background: t.bgInput,
+                borderRadius: "10px",
+                padding: "10px",
+                textAlign: "center",
+              }}
+            >
+              <p
+                style={{
+                  fontSize: "10px",
+                  color: t.textMuted,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.5px",
+                  marginBottom: "4px",
+                  fontWeight: 600,
+                }}
+              >
+                {c.label}
+              </p>
+              <p
+                style={{
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  fontFamily: "'JetBrains Mono'",
+                  color: c.color,
+                }}
+              >
+                {formatBRL(c.value)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Card>
 
       <div
         style={{
@@ -355,6 +446,18 @@ export default function Investments({ d, save }) {
             ))}
           </select>
 
+          {form.currency !== "BRL" && (
+            <Inp
+              type="text"
+              inputMode="decimal"
+              placeholder={`Cotação manual (${form.currency} para BRL)`}
+              value={form.fxRate}
+              onChange={(e) =>
+                setForm((f) => ({ ...f, fxRate: e.target.value }))
+              }
+            />
+          )}
+
           <p
             style={{
               fontSize: "11px",
@@ -478,6 +581,11 @@ export default function Investments({ d, save }) {
           const proj = calcProj(inv);
           const tp = INV_TYPES.find((x) => x.id === inv.type) || INV_TYPES[0];
           const currency = inv.currency || "BRL";
+          const fxRate = getFxRateToBRL(inv);
+
+          const principalBRL = getConvertedToBRL(inv.principal, currency, fxRate);
+          const monthlyBRL = getConvertedToBRL(proj.monthly, currency, fxRate);
+          const yearlyBRL = getConvertedToBRL(proj.yearly, currency, fxRate);
 
           return (
             <Card
@@ -516,6 +624,11 @@ export default function Investments({ d, save }) {
                       ? ` · ${inv.cdiPct}% CDI`
                       : ` · ${inv.customRate}% a.a.`}
                   </p>
+                  {currency !== "BRL" && fxRate > 0 && (
+                    <p style={{ fontSize: "11px", color: t.textSub, marginTop: "4px" }}>
+                      Cotação manual: {formatBRL(fxRate)}
+                    </p>
+                  )}
                 </div>
 
                 <button
@@ -596,6 +709,57 @@ export default function Investments({ d, save }) {
                   </div>
                 ))}
               </div>
+
+              {currency !== "BRL" && fxRate > 0 && (
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr 1fr",
+                    gap: "7px",
+                    marginTop: "8px",
+                  }}
+                >
+                  {[
+                    { label: "Em real", value: principalBRL, color: t.text },
+                    { label: "Mês em BRL", value: monthlyBRL, color: t.positive },
+                    { label: "Ano em BRL", value: yearlyBRL, color: "#8E6DC8" },
+                  ].map((c) => (
+                    <div
+                      key={c.label}
+                      style={{
+                        background: t.accentSoft,
+                        borderRadius: "8px",
+                        padding: "8px",
+                        textAlign: "center",
+                        border: `1px solid ${t.border}`,
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: "9px",
+                          color: t.textMuted,
+                          marginBottom: "3px",
+                          fontWeight: 600,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.4px",
+                        }}
+                      >
+                        {c.label}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          color: c.color,
+                          fontFamily: "'JetBrains Mono'",
+                        }}
+                      >
+                        {formatBRL(c.value)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <p
                 style={{
